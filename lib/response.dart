@@ -7,7 +7,7 @@ enum Level {
    *
    * The user have to do something to make the working unit even work.
    */
-  critical,
+  critical(4),
   /**
    * If a [Response] has the [error] [Level], it implies
    * the end of the current [Bubble]. Therefore you can say, that whatever happened
@@ -16,7 +16,7 @@ enum Level {
    *
    * The user have to do something to ensure the functionality of the currently working unit.
    */
-  error,
+  error(3),
   /**
    * If a [Response] has the [warning] [Level], it implies that something unexpected
    * happened, that does not hold the following steps back from doing their work,
@@ -24,7 +24,7 @@ enum Level {
    *
    * The user should be aware of this response.
    */
-  warning,
+  warning(2),
   /**
    * If a [Response] has the [status] [Level], it just wants to let you something know.
    * It isn't important that the user sees this, but if he wants to know whats going on,
@@ -32,13 +32,15 @@ enum Level {
    *
    * The user can take a look at this response.
    */
-  status,
+  status(1),
   /**
    * If a [Response] has the [verbose] [Level], it is just for debugging purposes or to find out,
    *
    * If the user wants extra information, they should look at this response.
    */
-  verbose,
+  verbose(0);
+  const Level(this.value);
+  final int value;
 }
 
 /**
