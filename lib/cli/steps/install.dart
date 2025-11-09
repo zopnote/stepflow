@@ -9,7 +9,7 @@ final class Install extends ConfigureStep {
    * Path where files should be installed to relative to the environment root.
    * The path is seperated through items of the list.
    */
-  final List<String> installPath;
+  final String installPath;
 
   /**
    * The names of the directories that will
@@ -26,7 +26,7 @@ final class Install extends ConfigureStep {
   /**
    * Path where the binaries are that should be copied to installPath.
    */
-  final List<String> binariesPath;
+  final String binariesPath;
 
   /**
    * File which contains these patterns will be excluded.
@@ -46,8 +46,8 @@ final class Install extends ConfigureStep {
    */
   const Install({
     required this.name,
-    this.installPath = const [],
-    this.binariesPath = const [],
+    this.installPath = "",
+    this.binariesPath = "",
     this.files = const [],
     this.directories = const [],
     this.excludeFileWithPatterns = const [],
@@ -64,8 +64,8 @@ final class Install extends ConfigureStep {
       return;
     }
     final String fileInstallPath = path.join(
-      path.joinAll(installPath),
-      path.relative(file.path, from: path.joinAll(binariesPath)),
+      installPath,
+      path.relative(file.path, from: binariesPath),
     );
     final fileInstallDirectory = Directory(path.dirname(fileInstallPath));
     if (!fileInstallDirectory.existsSync()) {
@@ -87,8 +87,8 @@ final class Install extends ConfigureStep {
         .cast<File>();
     files.forEach((file) {
       final String fileInstallPath = path.join(
-        path.joinAll(installPath),
-        path.relative(directory.path, from: path.joinAll(binariesPath)),
+        installPath,
+        path.relative(directory.path, from: binariesPath),
         path.relative(file.path, from: directory.path),
       );
       final fileInstallDirectory = Directory(path.dirname(fileInstallPath));
@@ -103,7 +103,7 @@ final class Install extends ConfigureStep {
   Step configure() {
     return Runnable(name: name, (context) {
       try {
-        final Directory workDirectory = Directory(path.joinAll(binariesPath));
+        final Directory workDirectory = Directory(binariesPath);
         workDirectory.listSync().forEach((entity) {
           if (entity is File)
             _forFile(entity);
