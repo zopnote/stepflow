@@ -26,7 +26,7 @@ the execution of steps inside of it, most workflows will be started inside one.
 With ``context.pop()`` you can always escape the current bubble
 directly with an error message. With ``context.close()`` you can exit all bubbles.
 If you want an own behaviour of execution,
-you should create a subclass of ``Bubble``. Documentation is in the source files and examples are [here](examples).
+you should create a subclass of ``Bubble``. Documentation is in the source files and examples are [here](example).
 
 ## Composition of Steps
 If you just want to build a workflow inside an application, you should use the ``ConfigureStep``. 
