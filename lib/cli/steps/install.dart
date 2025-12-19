@@ -7,7 +7,7 @@ import 'package:stepflow/common.dart';
 final class Install extends ConfigureStep {
   /**
    * Path where files should be installed to relative to the environment root.
-   * The path is seperated through items of the list.
+   * The path is separated through items of the list.
    */
   final String installPath;
 

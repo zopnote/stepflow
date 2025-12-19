@@ -8,8 +8,8 @@ final List<String> _pathEntries =
     Platform.environment["PATH"]?.split(Platform.isWindows ? ";" : ":") ?? [];
 
 /**
- * Ensures the availability of the received programs.
- * It searches in the file system, the systems path variable and in the command line.
+ * Searches in the file system, the systems path variable and/or in the command line
+ * for the received programs to ensure their availability.
  */
 final class Check extends ConfigureStep {
   /// Name (without extension) of the executables or links you are searching for.

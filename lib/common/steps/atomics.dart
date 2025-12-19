@@ -25,10 +25,16 @@ abstract class Step {
     FutureOr<Step?> candidate()?,
   ]);
 
+  /// TODO: For debugging there should be specific meta information.
+  /// Should implement a meta() class instead of toJson().
+
   /**
    * For debugging purposes a [Step] should be able to save it's values into
    * a json map.
+   *
+   * **Deprecated**: Going to be replaced in the next major version.
    */
+  @deprecated
   Map<String, dynamic> toJson();
 }
 

@@ -26,4 +26,4 @@ you should be able to depend on Stepflow.
 - Extracted several snippets into their own functions in multiple classes.
 - Added ``critical`` Level to responses.
 - An execution doesn't have to ``return`` a ``Response`` anymore.
-- Added documentation to README.md
+- Added documentation to ``README.md``.

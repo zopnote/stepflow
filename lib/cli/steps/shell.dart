@@ -52,9 +52,10 @@ final class Shell extends ConfigureStep {
   final String name;
 
   /**
-   * Default const constructor.
+   * Executes a program in the systems command line.
    *
-   * The default values of [runAsAdministrator] and [runInShell] are [false].
+   * Default const constructor,
+   * the default values of [runAsAdministrator] and [runInShell] are [false].
    */
   const Shell({
     required this.name,
