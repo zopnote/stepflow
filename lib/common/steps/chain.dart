@@ -7,6 +7,7 @@ import 'package:stepflow/common.dart';
  * If you want an infinite [Chain], create your own [Bubble].
  */
 final class Chain extends Bubble {
+
   /**
    * The [build] function has to return a [Step] until the index is as high,
    * as the length allows. The function will be executed every time,
@@ -62,11 +63,4 @@ final class Chain extends Bubble {
     }
     return build(_index++);
   }
-
-  @override
-  Map<String, dynamic> toJson() => {
-    "type": "chain",
-    "length": length,
-    "current_index": _index,
-  };
 }

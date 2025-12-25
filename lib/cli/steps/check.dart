@@ -126,12 +126,4 @@ final class Check extends ConfigureStep {
       ),
     );
   });
-
-  @override
-  Map<String, dynamic> toJson() => {
-    "type": "check",
-    "programs_required": programs,
-    "directories_to_search_inside": directories,
-    "can_search_start_processes": searchCanStartProcesses,
-  };
 }

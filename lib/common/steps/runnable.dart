@@ -32,7 +32,4 @@ final class Runnable extends Step {
     await run(controller.context);
     return (candidate ?? () => null)();
   }
-
-  @override
-  Map<String, dynamic> toJson() => {"type": "runnable", "name": name};
 }

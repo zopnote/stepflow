@@ -191,15 +191,4 @@ final class Shell extends ConfigureStep {
       ),
     );
   });
-
-  @override
-  Map<String, dynamic> toJson() => {
-    "type": "shell",
-    "name": name,
-    "run_as_administrator": runAsAdministrator,
-    "run_in_shell": runInShell,
-    if (workingDirectory != null) "working_directory": workingDirectory,
-    "program": program,
-    "arguments": arguments,
-  };
 }
