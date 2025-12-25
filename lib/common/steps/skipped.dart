@@ -18,9 +18,4 @@ final class Skipped extends Step {
   ]) {
     return (candidate ?? () => null)();
   }
-
-  @override
-  Map<String, dynamic> toJson() => {
-    "type": "run"
-  };
 }

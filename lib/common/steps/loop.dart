@@ -54,12 +54,4 @@ final class Loop extends Bubble {
     leave = step == null;
     return step ?? Skipped();
   }
-
-  @override
-  Map<String, dynamic> toJson() => {
-    "type": "loop",
-    "length": length,
-    "leave": leave,
-    "index": index
-  };
 }
