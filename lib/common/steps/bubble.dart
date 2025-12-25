@@ -53,7 +53,8 @@ abstract class Bubble extends Step {
     FutureOr<Step?> candidate()?,
   ]) async {
     controller.depth++;
-    final int chainsDepth = controller.depth;
+    final int initialDepth = controller.depth;
+    final none = () => null;
 
     /*
      * The [decide()] function will be the candidate for every [Step] of his
@@ -62,20 +63,22 @@ abstract class Bubble extends Step {
      * next "[candidate]" ([Step] in execution order).
      */
     FutureOr<Step?> decide() async {
+
       /*
        * The [depth] of the controller will be able to change from the
        * [Step]s the [Bubble] includes.
        */
-      if (chainsDepth > controller.depth) {
-        return (candidate ?? () => null)();
+      if (initialDepth > controller.depth) {
+        return (candidate ?? none)();
       }
+
       /*
        * In a derived class, leave can be set to leave the [Bubble] successfully.
        * (Just without an error message)
        */
       if (leave) {
         controller.depth--;
-        return (candidate ?? () => null)();
+        return (candidate ?? none)();
       }
       return builder().execute(controller, decide);
     }
