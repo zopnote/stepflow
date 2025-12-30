@@ -44,7 +44,6 @@ Future<void> runCheckTest({
   );
   runWorkflow(checkStep, (r) => responseMessages += r.message);
   final JsonEncoder encoder = JsonEncoder.withIndent("   ");
-  printOnFailure(encoder.convert(checkStep.toJson()));
 
   expect(
     responseMessages.contains(expectedToFail ? failurePattern : successPattern),
