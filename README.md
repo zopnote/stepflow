@@ -73,8 +73,6 @@ class PrintOutDartVersion extends ConfigureStep {
 It is a step, that will atomize itself into the steps, it is composed of. A ``ConfigureStep`` has to be extended and it`s ``configure()``-function should be overridden.
 It returns then a composition of steps. A list and explanation of the common steps can be found in their sources [here](lib/common/steps).
 
-**For further information, checkout the implementation of [dart2embed](https://github.com/zopnote/dart2embed/tree/main) that uses Stepflow.**
-
 ## CLI
 Stepflow also comes with framework-like-styled glue code for CLI commands and flags.
 A ``Command`` often consists of the following settings:
