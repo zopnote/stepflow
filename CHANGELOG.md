@@ -1,11 +1,13 @@
-## 1.0.0
+> "-unsure" means that the interface is not yet stable.
+
+## 1.0.0-unsure
 
 - Base workflow structure
 - Essential steps
 - Commands & flags structure (cmdline)
 - CLI steps for toolchain development
 
-## 1.0.1
+## 1.0.1-unsure
 - Added ``onFailure()`` & ``onSuccess()`` to the ``Check``-step.
 - Fixed the output of ``Check`` when ``canStartProcesses`` is set to ``false``.
 - Fixed directory look-up of ``Check``.
@@ -28,11 +30,11 @@ you should be able to depend on Stepflow.
 - An execution doesn't have to ``return`` a ``Response`` anymore.
 - Added documentation to README.md
 
-## 2.1.0
+## 2.1.0-pre
 - Added ``Platform`` representation ``class`` for scripting with the purpose of targeting different platforms.
 - Added ``drafts/`` for future ideas.
 
-# 2.1.1
+## 2.1.1
 - Unified versioning of Apple platforms.
 - Added wiki and documentation.
 - Fixed Windows platform detection.
