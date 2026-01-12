@@ -1,0 +1,21 @@
+name: Sync Wiki
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/wiki/**'
+
+jobs:
+  sync-wiki:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Sync Wiki
+        uses: Andrew-Chen-Wang/github-wiki-action@v4
+        with:
+          strategy: 'clone'
+          path: '.github/wiki'
+          token: ${{ secrets.GITHUB_TOKEN }}
