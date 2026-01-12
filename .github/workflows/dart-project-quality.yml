@@ -2,8 +2,18 @@ name: Stability of main branch
 on:
   push:
     branches: [main]
+    paths:
+      - 'lib/**'
+      - 'example/**'
+      - 'test/**'
+      - 'pubspec.yaml'
   pull_request:
     branches: [main]
+    paths:
+      - 'lib/**'
+      - 'example/**'
+      - 'test/**'
+      - 'pubspec.yaml'
 
 jobs:
   quality:
