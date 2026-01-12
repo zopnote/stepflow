@@ -27,3 +27,7 @@ you should be able to depend on Stepflow.
 - Added ``critical`` Level to responses.
 - An execution doesn't have to ``return`` a ``Response`` anymore.
 - Added documentation to README.md
+
+## 2.1.0
+- Added ``Platform`` representation ``class`` for scripting with the purpose of targeting different platforms.
+- Added ``drafts/`` for future ideas.
