@@ -31,3 +31,13 @@ you should be able to depend on Stepflow.
 ## 2.1.0
 - Added ``Platform`` representation ``class`` for scripting with the purpose of targeting different platforms.
 - Added ``drafts/`` for future ideas.
+
+# 2.1.1
+- Unified versioning of Apple platforms.
+- Added wiki and documentation.
+- Fixed Windows platform detection.
+- Export attributes with ``platform.dart``.
+- Added ``OperatingSystem.generic``.
+- Added ``workflow_dispath`` to ``dart-project-quality.yml``.
+- Updated ``dart-project-quality.yml`` to just run on ``lib/``, ``example/`` and ``test/``.
+- Removed reference to _dart2embed_-project from ``README.md``.
