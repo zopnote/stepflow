@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:stepflow/cli/steps/check.dart';
@@ -43,7 +42,6 @@ Future<void> runCheckTest({
     onSuccess: onSuccess,
   );
   runWorkflow(checkStep, (r) => responseMessages += r.message);
-  final JsonEncoder encoder = JsonEncoder.withIndent("   ");
 
   expect(
     responseMessages.contains(expectedToFail ? failurePattern : successPattern),

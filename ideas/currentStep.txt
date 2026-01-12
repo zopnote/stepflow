@@ -1,0 +1,3 @@
+Add currentStep to the FlowContext for debugging purposes and control flow.
+
+Later include the functions of Bubble into the FlowContext.

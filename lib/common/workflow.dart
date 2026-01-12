@@ -51,7 +51,6 @@ final class FlowContextController {
    */
   FlowContextController._internal(this.responses) {
     context = FlowContext(
-      () => currentStep,
       (value) => depth = value,
       () => depth,
       sink: responses.sink,
@@ -101,7 +100,6 @@ final class FlowContext {
    */
   final void Function(int value) _setDepth;
 
-  final Step? Function() _currentStep;
 
   /**
    * Gets the Context's depth. Mapped to it's controller.
@@ -114,7 +112,7 @@ final class FlowContext {
    */
   final StreamSink<Response> sink;
 
-  FlowContext(this._currentStep, this._setDepth, this._getDepth, {required this.sink});
+  FlowContext(this._setDepth, this._getDepth, {required this.sink});
 
   /**
    * Escapes the current [Bubble].
