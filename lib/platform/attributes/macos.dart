@@ -28,14 +28,13 @@ enum MacOSProcessor {
 final class MacOSAttributes extends PlatformAttributes {
   const MacOSAttributes({
     required this.processor,
-    required Version version,
-    this.sdkVersion,
-  }) : super("macos", version);
+    required this.sdkVersion,
+  }) : super("macos", sdkVersion);
 
   final MacOSProcessor processor;
 
   /**
    * The version of the macOS SDK used for building or targeting.
    */
-  final Version? sdkVersion;
+  final Version sdkVersion;
 }
