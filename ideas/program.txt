@@ -1,0 +1,1 @@
+Bei Shell und ähnlichen sollte eine Programrepresentation bessere Überprüfbarkeit und sinnvolleren Codefluss bieten.
