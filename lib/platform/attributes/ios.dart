@@ -6,12 +6,12 @@ import 'package:stepflow/platform/platform.dart';
  * Attributes for representation purposes of the iOS platform.
  */
 final class iOSAttributes extends PlatformAttributes {
-  const iOSAttributes({required Version version, this.sdkVersion}) : super("ios", version);
+  const iOSAttributes({required this.sdkVersion}) : super("ios", sdkVersion);
 
   /**
    * The version of the iOS SDK used for building or targeting.
    */
-  final Version? sdkVersion;
+  final Version sdkVersion;
 
   /**
    * The hardware architecture of the iOS device.

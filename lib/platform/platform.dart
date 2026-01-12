@@ -1,10 +1,19 @@
-import 'package:stepflow/platform/attributes/baremetal.dart';
-import 'package:stepflow/platform/attributes/ios.dart';
-import 'package:stepflow/platform/attributes/macos.dart';
 import 'dart:io' as io show Platform;
+
+import 'attributes/baremetal.dart';
+import 'attributes/ios.dart';
+import 'attributes/macos.dart';
 import 'attributes/android.dart';
 import 'attributes/linux.dart';
 import 'attributes/windows.dart';
+
+export 'attributes/baremetal.dart';
+export 'attributes/ios.dart';
+export 'attributes/macos.dart';
+export 'attributes/android.dart';
+export 'attributes/linux.dart';
+export 'attributes/windows.dart';
+
 
 extension FirstWhereOrNullExtension<E> on Iterable<E> {
   E? firstWhereOrNull(bool Function(E element) test) {
@@ -45,7 +54,7 @@ class Version {
    */
   static Version parse(String versionString) {
     final segments =
-        versionString.split(RegExp(r'[^\d]')).where((s) => s.isNotEmpty).toList();
+        versionString.split(RegExp(r'\D')).where((s) => s.isNotEmpty).toList();
     final major = segments.length > 0 ? int.tryParse(segments[0]) ?? 0 : 0;
     final minor = segments.length > 1 ? int.tryParse(segments[1]) ?? 0 : 0;
     final patch = segments.length > 2 ? int.tryParse(segments[2]) ?? 0 : 0;
@@ -107,6 +116,9 @@ enum OperatingSystem {
    * without a full OS, that provides os abi.
    */
   none,
+
+  /// Generic operating system without further description.
+  generic,
 }
 
 /**
@@ -198,7 +210,7 @@ class Platform<Attributes extends PlatformAttributes> {
 
       return Platform.macos(
         processor: processor,
-        version: Version.parse(io.Platform.operatingSystemVersion),
+        sdkVersion: Version.parse(io.Platform.operatingSystemVersion),
       );
     }
 
@@ -220,7 +232,7 @@ class Platform<Attributes extends PlatformAttributes> {
 
     if (io.Platform.isIOS) {
       return Platform.ios(
-          version: Version.parse(io.Platform.operatingSystemVersion));
+          sdkVersion: Version.parse(io.Platform.operatingSystemVersion));
     }
 
     return Platform.bareMetal(
@@ -277,13 +289,11 @@ class Platform<Attributes extends PlatformAttributes> {
    */
   static Platform<MacOSAttributes> macos({
     required MacOSProcessor processor,
-    required Version version,
-    Version? sdkVersion,
+    required Version sdkVersion,
   }) => Platform(
     os: OperatingSystem.macos,
     attributes: MacOSAttributes(
       processor: processor,
-      version: version,
       sdkVersion: sdkVersion,
     ),
   );
@@ -292,11 +302,10 @@ class Platform<Attributes extends PlatformAttributes> {
    * Creates an iOS platform for the specified [version] and [sdkVersion].
    */
   static Platform<iOSAttributes> ios({
-    required Version version,
-    Version? sdkVersion,
+    required sdkVersion,
   }) => Platform(
     os: OperatingSystem.ios,
-    attributes: iOSAttributes(version: version, sdkVersion: sdkVersion),
+    attributes: iOSAttributes(sdkVersion: sdkVersion),
   );
 
   /**
