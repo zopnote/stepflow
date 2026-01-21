@@ -1,17 +1,44 @@
 import 'package:stepflow/cli/program.dart';
 import 'package:stepflow/cli/steps/shell.dart';
 import 'package:stepflow/common/steps/atomics.dart';
-import 'package:stepflow/platform/platform.dart' as stepflow;
-
+import 'package:stepflow/platform/platform.dart' as _;
 
 class Clang extends Application {
   const Clang(String executable) : super("clang", executable);
 
   Step analyzeFiles({
-    required List<String> inputFiles,
+    required Iterable<String> inputFiles,
     ClangStaticAnalysisOptions options = const ClangStaticAnalysisOptions(),
-  }) {
-    final arguments = <String>["--analyze"];
+  }) =>
+      ClangAnalyze.from(executable, inputFiles: inputFiles, options: options);
+
+  Step compileFiles({
+    required Iterable<String> inputFiles,
+    required String outputFile,
+    required _.Platform targetPlatform,
+    Iterable<ClangLibrary> libraries = const [],
+    ClangTargetArchitecture? overrideTargetArchitecture,
+    ClangCompilationOptions options = const ClangCompilationOptions(),
+  }) =>
+      ClangCompile.from(executable,
+          inputFiles: inputFiles,
+          outputFile: outputFile,
+          options: options,
+          libraries: libraries,
+          targetPlatform: targetPlatform);
+}
+
+class ClangAnalyze extends ConfigureStep {
+  final String executable;
+  final Iterable<String> inputFiles;
+  final ClangStaticAnalysisOptions options;
+
+  const ClangAnalyze.from(this.executable,
+      {required this.inputFiles, required this.options});
+
+  @override
+  Step configure() {
+    final List<String> arguments = ["--analyze"];
 
     arguments.addAll(inputFiles);
 
@@ -46,25 +73,67 @@ class Clang extends Application {
     arguments.addAll(options.additionalArguments);
 
     return Shell(
-      name: "Static analysis with Clang",
-      program: name,
+      program: executable,
       arguments: arguments,
     );
   }
-
-  Step compileFiles({
-    required List<String> inputFiles,
-    required String outputFile,
-    required stepflow.Platform targetPlatform,
-    Iterable<ClangLibrary> libraries = const [],
-    ClangTargetArchitecture? overrideTargetArchitecture,
-    ClangCompilationOptions options = const ClangCompilationOptions(),
-  }) => ClangCompile();
 }
 
 class ClangCompile extends ConfigureStep {
   final String executable;
-  const ClangCompile(this.executable);
+  final Iterable<String> inputFiles;
+  final String outputFile;
+  final Iterable<ClangLibrary> libraries;
+  final _.Platform? targetPlatform;
+  final ClangCompilationOptions options;
+  const ClangCompile.from(this.executable,
+      {required this.inputFiles,
+      required this.outputFile,
+      this.options = const ClangCompilationOptions(),
+      this.libraries = const [],
+      this.targetPlatform});
+
+  static String getTargetTriple() {
+
+    String _architecture(_.Architecture arch) {
+      switch (arch) {
+        case _.Architecture.amd64:
+          return "x86_64";
+        case _.Architecture.x86:
+          return "i686";
+        default:
+          return arch.name;
+      }
+    };
+
+    String _vendor(_.OperatingSystem os) {
+      switch (os) {
+        case _.OperatingSystem.windows:
+        case _.OperatingSystem.linux:
+          return "pc";
+        case _.OperatingSystem.android:
+          return "linux";
+        case _.OperatingSystem.ios:
+        case _.OperatingSystem.macos:
+          return "apple";
+        default:
+          return "unknown";
+      }
+    }
+
+    String _abi(_.OperatingSystem os, _.Architecture arch) {
+      switch (os) {
+        case _.OperatingSystem.windows:
+          return "msvc";
+        case _.OperatingSystem.macos:
+        case _.OperatingSystem.ios:
+          return "darwin";
+        case _.OperatingSystem.linux:
+          return arch == _.Architecture.arm ? "gnueabihf" : "gnu";
+        case _.OperatingSystem.generic:
+      }
+    }
+  }
   @override
   Step configure() {
     final List<String> arguments = [];
@@ -88,6 +157,12 @@ class ClangCompile extends ConfigureStep {
         break;
     }
 
+    if (targetPlatform != null) {
+
+      {
+
+      }
+    }
     if (options.targetArchitecture != null) {
       arguments.add("-march=${options.targetArchitecture!.march}");
     }
@@ -115,12 +190,12 @@ class ClangCompile extends ConfigureStep {
     arguments.addAll(options.additionalArguments);
 
     return Shell(
-      name: "Compiling ${inputFiles.join(", ")} with Clang into $outputFile.",
-      program: this.name,
+      program: executable,
       arguments: arguments,
     );
   }
 }
+
 enum ClangShowWarnings {
   none("w"),
   all("Wall"),
@@ -154,193 +229,193 @@ class ClangTargetArchitecture {
    * Optimizes the code for the host machine's CPU.
    */
   static const ClangTargetArchitecture native =
-  ClangTargetArchitecture("native");
+      ClangTargetArchitecture("native");
 
   /**
    * Generic x86-64 architecture.
    */
   static const ClangTargetArchitecture x86_64 =
-  ClangTargetArchitecture("x86-64");
+      ClangTargetArchitecture("x86-64");
 
   /**
    * x86-64 with CMPXCHG16B, LAHF-SAHF, POPCNT, SSE3, SSE4.1, SSE4.2, and SSSE3.
    */
   static const ClangTargetArchitecture x86_64_v2 =
-  ClangTargetArchitecture("x86-64-v2");
+      ClangTargetArchitecture("x86-64-v2");
 
   /**
    * x86-64-v2 with AVX, AVX2, BMI1, BMI2, F16C, FMA, LZCNT, and MOVBE.
    */
   static const ClangTargetArchitecture x86_64_v3 =
-  ClangTargetArchitecture("x86-64-v3");
+      ClangTargetArchitecture("x86-64-v3");
 
   /**
    * x86-64-v3 with AVX512F, AVX512BW, AVX512CD, AVX512DQ, and AVX512VL.
    */
   static const ClangTargetArchitecture x86_64_v4 =
-  ClangTargetArchitecture("x86-64-v4");
+      ClangTargetArchitecture("x86-64-v4");
 
   /**
    * Generic ARMv7 architecture.
    */
   static const ClangTargetArchitecture arm_v7 =
-  ClangTargetArchitecture("armv7");
+      ClangTargetArchitecture("armv7");
 
   /**
    * ARMv7-A architecture (e.g., Cortex-A series).
    */
   static const ClangTargetArchitecture arm_v7a =
-  ClangTargetArchitecture("armv7-a");
+      ClangTargetArchitecture("armv7-a");
 
   /**
    * ARMv8-A architecture (e.g., Cortex-A53, A57).
    */
   static const ClangTargetArchitecture arm_v8a =
-  ClangTargetArchitecture("armv8-a");
+      ClangTargetArchitecture("armv8-a");
 
   /**
    * ARMv8.1-A architecture.
    */
   static const ClangTargetArchitecture arm_v8_1a =
-  ClangTargetArchitecture("armv8.1-a");
+      ClangTargetArchitecture("armv8.1-a");
 
   /**
    * ARMv8.2-A architecture.
    */
   static const ClangTargetArchitecture arm_v8_2a =
-  ClangTargetArchitecture("armv8.2-a");
+      ClangTargetArchitecture("armv8.2-a");
 
   /**
    * ARMv9-A architecture.
    */
   static const ClangTargetArchitecture arm_v9a =
-  ClangTargetArchitecture("armv9-a");
+      ClangTargetArchitecture("armv9-a");
 
   /**
    * Generic 64-bit ARM architecture.
    */
   static const ClangTargetArchitecture aarch64 =
-  ClangTargetArchitecture("aarch64");
+      ClangTargetArchitecture("aarch64");
 
   /**
    * Intel Skylake (6th Gen Core) architecture.
    */
   static const ClangTargetArchitecture intel_skylake =
-  ClangTargetArchitecture("skylake");
+      ClangTargetArchitecture("skylake");
 
   /**
    * Intel Cannon Lake (8th Gen Core) architecture.
    */
   static const ClangTargetArchitecture intel_cannonlake =
-  ClangTargetArchitecture("cannonlake");
+      ClangTargetArchitecture("cannonlake");
 
   /**
    * Intel Ice Lake (Client) architecture.
    */
   static const ClangTargetArchitecture intel_icelake_client =
-  ClangTargetArchitecture("icelake-client");
+      ClangTargetArchitecture("icelake-client");
 
   /**
    * Intel Ice Lake (Server) architecture.
    */
   static const ClangTargetArchitecture intel_icelake_server =
-  ClangTargetArchitecture("icelake-server");
+      ClangTargetArchitecture("icelake-server");
 
   /**
    * Intel Cascade Lake architecture.
    */
   static const ClangTargetArchitecture intel_cascadelake =
-  ClangTargetArchitecture("cascadelake");
+      ClangTargetArchitecture("cascadelake");
 
   /**
    * Intel Cooper Lake architecture.
    */
   static const ClangTargetArchitecture intel_cooperlake =
-  ClangTargetArchitecture("cooperlake");
+      ClangTargetArchitecture("cooperlake");
 
   /**
    * Intel Tiger Lake (11th Gen Core) architecture.
    */
   static const ClangTargetArchitecture intel_tigerlake =
-  ClangTargetArchitecture("tigerlake");
+      ClangTargetArchitecture("tigerlake");
 
   /**
    * Intel Sapphire Rapids architecture.
    */
   static const ClangTargetArchitecture intel_sapphirerapids =
-  ClangTargetArchitecture("sapphirerapids");
+      ClangTargetArchitecture("sapphirerapids");
 
   /**
    * Intel Alder Lake (12th Gen Core) architecture.
    */
   static const ClangTargetArchitecture intel_alderlake =
-  ClangTargetArchitecture("alderlake");
+      ClangTargetArchitecture("alderlake");
 
   /**
    * Intel Rocket Lake (11th Gen Core Desktop) architecture.
    */
   static const ClangTargetArchitecture intel_rocketlake =
-  ClangTargetArchitecture("rocketlake");
+      ClangTargetArchitecture("rocketlake");
 
   /**
    * AMD Zen 1 architecture.
    */
   static const ClangTargetArchitecture amd_zen1 =
-  ClangTargetArchitecture("znver1");
+      ClangTargetArchitecture("znver1");
 
   /**
    * AMD Zen 2 architecture.
    */
   static const ClangTargetArchitecture amd_zen2 =
-  ClangTargetArchitecture("znver2");
+      ClangTargetArchitecture("znver2");
 
   /**
    * AMD Zen 3 architecture.
    */
   static const ClangTargetArchitecture amd_zen3 =
-  ClangTargetArchitecture("znver3");
+      ClangTargetArchitecture("znver3");
 
   /**
    * AMD Zen 4 architecture.
    */
   static const ClangTargetArchitecture amd_zen4 =
-  ClangTargetArchitecture("znver4");
+      ClangTargetArchitecture("znver4");
 
   /**
    * Apple M1 (ARM64) architecture.
    */
   static const ClangTargetArchitecture apple_m1 =
-  ClangTargetArchitecture("apple-m1");
+      ClangTargetArchitecture("apple-m1");
 
   /**
    * Apple M2 (ARM64) architecture.
    */
   static const ClangTargetArchitecture apple_m2 =
-  ClangTargetArchitecture("apple-m2");
+      ClangTargetArchitecture("apple-m2");
 
   /**
    * Apple M3 (ARM64) architecture.
    */
   static const ClangTargetArchitecture apple_m3 =
-  ClangTargetArchitecture("apple-m3");
+      ClangTargetArchitecture("apple-m3");
 
   /**
    * Apple A14 Bionic (ARM64) architecture.
    */
   static const ClangTargetArchitecture apple_a14 =
-  ClangTargetArchitecture("apple-a14");
+      ClangTargetArchitecture("apple-a14");
 
   /**
    * Apple A15 Bionic (ARM64) architecture.
    */
   static const ClangTargetArchitecture apple_a15 =
-  ClangTargetArchitecture("apple-a15");
+      ClangTargetArchitecture("apple-a15");
 
   /**
    * Apple A16 Bionic (ARM64) architecture.
    */
   static const ClangTargetArchitecture apple_a16 =
-  ClangTargetArchitecture("apple-a16");
+      ClangTargetArchitecture("apple-a16");
 
   const ClangTargetArchitecture(this.march);
   final String march;
@@ -355,9 +430,11 @@ class ClangCompilationOptions {
   final List<String> macros;
   final List<String> additionalArguments;
   final ClangShowWarnings warnings;
+  final String? overrideTargetTriple;
   final bool legacySupport;
 
   const ClangCompilationOptions({
+    this.overrideTargetTriple,
     this.targetArchitecture,
     this.language,
     this.warnings = ClangShowWarnings.all,

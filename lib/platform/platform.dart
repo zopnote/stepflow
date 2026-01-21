@@ -14,7 +14,6 @@ export 'attributes/android.dart';
 export 'attributes/linux.dart';
 export 'attributes/windows.dart';
 
-
 extension FirstWhereOrNullExtension<E> on Iterable<E> {
   E? firstWhereOrNull(bool Function(E element) test) {
     for (E element in this) {
@@ -119,6 +118,7 @@ enum OperatingSystem {
 
   /// Generic operating system without further description.
   generic,
+
 }
 
 /**
@@ -128,6 +128,7 @@ enum OperatingSystem {
 abstract class PlatformAttributes {
   final String name;
   final Version version;
+  Architecture get arch;
   const PlatformAttributes(this.name, this.version);
 }
 
@@ -174,9 +175,10 @@ class Platform<Attributes extends PlatformAttributes> {
         _ => WindowsArchitecture.x64,
       };
 
-      final String osVersionString = io.Platform.operatingSystemVersion.split("\"").last;
-      final RegExpMatch? buildMatch = RegExp(r'Build (\d+)')
-          .firstMatch(osVersionString);
+      final String osVersionString =
+          io.Platform.operatingSystemVersion.split("\"").last;
+      final RegExpMatch? buildMatch =
+          RegExp(r'Build (\d+)').firstMatch(osVersionString);
       final int buildNumber =
           buildMatch != null ? int.tryParse(buildMatch.group(1)!) ?? 0 : 0;
       final version = Version.parse(osVersionString);
@@ -254,13 +256,14 @@ class Platform<Attributes extends PlatformAttributes> {
   static Platform<WindowsAttributes> windows({
     required WindowsArchitecture architecture,
     required WindowsBuildVersion buildVersion,
-  }) => Platform(
-    os: OperatingSystem.windows,
-    attributes: WindowsAttributes(
-      architecture: architecture,
-      buildVersion: buildVersion,
-    ),
-  );
+  }) =>
+      Platform(
+        os: OperatingSystem.windows,
+        attributes: WindowsAttributes(
+          architecture: architecture,
+          buildVersion: buildVersion,
+        ),
+      );
 
   /**
    * Creates a Linux platform with the specified [architecture] and optional [distribution].
@@ -268,10 +271,11 @@ class Platform<Attributes extends PlatformAttributes> {
    */
   static Platform<LinuxAttributes> linux({
     required LinuxArchitecture architecture,
-  }) => Platform(
-    os: OperatingSystem.linux,
-    attributes: LinuxAttributes(architecture: architecture),
-  );
+  }) =>
+      Platform(
+        os: OperatingSystem.linux,
+        attributes: LinuxAttributes(architecture: architecture),
+      );
 
   /**
    * Creates an Android platform with the specified [apiLevel] and [abi].
@@ -279,10 +283,11 @@ class Platform<Attributes extends PlatformAttributes> {
   static Platform<AndroidAttributes> android({
     required AndroidAPI apiLevel,
     required AndroidABI abi,
-  }) => Platform(
-    os: OperatingSystem.android,
-    attributes: AndroidAttributes(apiLevel: apiLevel, abi: abi),
-  );
+  }) =>
+      Platform(
+        os: OperatingSystem.android,
+        attributes: AndroidAttributes(apiLevel: apiLevel, abi: abi),
+      );
 
   /**
    * Creates a macOS platform targeting the specified [processor], [version] and [sdkVersion].
@@ -290,23 +295,25 @@ class Platform<Attributes extends PlatformAttributes> {
   static Platform<MacOSAttributes> macos({
     required MacOSProcessor processor,
     required Version sdkVersion,
-  }) => Platform(
-    os: OperatingSystem.macos,
-    attributes: MacOSAttributes(
-      processor: processor,
-      sdkVersion: sdkVersion,
-    ),
-  );
+  }) =>
+      Platform(
+        os: OperatingSystem.macos,
+        attributes: MacOSAttributes(
+          processor: processor,
+          sdkVersion: sdkVersion,
+        ),
+      );
 
   /**
    * Creates an iOS platform for the specified [version] and [sdkVersion].
    */
   static Platform<iOSAttributes> ios({
     required sdkVersion,
-  }) => Platform(
-    os: OperatingSystem.ios,
-    attributes: iOSAttributes(sdkVersion: sdkVersion),
-  );
+  }) =>
+      Platform(
+        os: OperatingSystem.ios,
+        attributes: iOSAttributes(sdkVersion: sdkVersion),
+      );
 
   /**
    * Creates a bare-metal platform with the specified CPU [architecture].
@@ -316,8 +323,9 @@ class Platform<Attributes extends PlatformAttributes> {
    */
   static Platform<BareMetalAttributes> bareMetal({
     required Architecture architecture,
-  }) => Platform(
-    os: OperatingSystem.none,
-    attributes: BareMetalAttributes(architecture: architecture),
-  );
+  }) =>
+      Platform(
+        os: OperatingSystem.none,
+        attributes: BareMetalAttributes(arch: architecture),
+      );
 }

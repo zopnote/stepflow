@@ -126,12 +126,12 @@ enum WindowsArchitecture {
    */
   x86(Architecture.x86);
 
-  const WindowsArchitecture(this.architecture);
+  const WindowsArchitecture(this.arch);
 
   /**
    * The underlying hardware architecture.
    */
-  final Architecture architecture;
+  final Architecture arch;
 }
 
 final class WindowsAttributes extends PlatformAttributes {
@@ -139,4 +139,7 @@ final class WindowsAttributes extends PlatformAttributes {
     : super("windows", buildVersion.version);
   final WindowsBuildVersion buildVersion;
   final WindowsArchitecture architecture;
+  @override
+  // TODO: implement arch
+  Architecture get arch => architecture.arch;
 }
