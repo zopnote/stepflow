@@ -49,7 +49,8 @@ final class Shell extends ConfigureStep {
   /**
    * Tag describing whatever this [Shell] does.
    */
-  final String name;
+  @Deprecated("Will be removed in the next major version.")
+  final String? name;
 
   /**
    * Default const constructor.
@@ -57,7 +58,7 @@ final class Shell extends ConfigureStep {
    * The default values of [runAsAdministrator] and [runInShell] are [false].
    */
   const Shell({
-    required this.name,
+    @Deprecated("Will be removed in the next major version.") this.name,
     required this.program,
     required this.arguments,
     this.onStdout,
@@ -140,55 +141,55 @@ final class Shell extends ConfigureStep {
    * Returns the composed process that will be started.
    */
   Future<Process> getProcess() => Process.start(
-    getProgram(),
-    getArguments(),
-    workingDirectory: workingDirectory,
-    environment: {},
-    includeParentEnvironment: true,
-    mode: ProcessStartMode.normal,
-    runInShell: runInShell,
-  );
+        getProgram(),
+        getArguments(),
+        workingDirectory: workingDirectory,
+        environment: {},
+        includeParentEnvironment: true,
+        mode: ProcessStartMode.normal,
+        runInShell: runInShell,
+      );
 
   @override
   Step configure() => Runnable(name: name, (context) async {
-    final process = await getProcess();
-    /*
+        final process = await getProcess();
+        /*
      * We have to await both futures at once with the list.
      */
-    final List<Future<void>> futures = [];
-    process.stdout.listen((chars) {
-      if (onStdout != null) {
-        futures.add(Future.value(onStdout!(context, chars)));
-      }
-    });
-    /*
+        final List<Future<void>> futures = [];
+        process.stdout.listen((chars) {
+          if (onStdout != null) {
+            futures.add(Future.value(onStdout!(context, chars)));
+          }
+        });
+        /*
      * A full string is built for the response.
      */
-    String fullStderr = "";
-    process.stderr.listen((chars) {
-      if (onStderr != null) {
-        futures.add(Future.value(onStderr!(context, chars)));
-      }
-      fullStderr += "\n${String.fromCharCodes(chars)}";
-    });
+        String fullStderr = "";
+        process.stderr.listen((chars) {
+          if (onStderr != null) {
+            futures.add(Future.value(onStderr!(context, chars)));
+          }
+          fullStderr += "\n${String.fromCharCodes(chars)}";
+        });
 
-    /*
+        /*
      * Await the process to be completed.
      * Then awaits only the futures (The actions of the stdout & stderr are already done).
      */
-    await process.exitCode;
-    await Future.wait(futures);
+        await process.exitCode;
+        await Future.wait(futures);
 
-    if (runAsAdministrator && Platform.isWindows) {
-      await _windowsWaitForPowershell();
-    }
-    context.send(
-      Response(
-        fullStderr.isNotEmpty
-            ? "An error occurred in the process: $fullStderr"
-            : "Shell step executed without any issues.",
-        Level.verbose,
-      ),
-    );
-  });
+        if (runAsAdministrator && Platform.isWindows) {
+          await _windowsWaitForPowershell();
+        }
+        context.send(
+          Response(
+            fullStderr.isNotEmpty
+                ? "An error occurred in the process: $fullStderr"
+                : "Shell step executed without any issues.",
+            Level.verbose,
+          ),
+        );
+      });
 }

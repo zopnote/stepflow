@@ -82,14 +82,25 @@ class AndroidAPI {
  *
  * More information about the android ABIs can be found inside the [NDK documentation](https://developer.android.com/ndk/guides/abis?hl=de)
  */
-enum AndroidABI { armeabi_v7a, arm64_v8a, x86, x86_64 }
+enum AndroidABI {
+  armeabi_v7a(Architecture.arm),
+  arm64_v8a(Architecture.aarch64),
+  x86(Architecture.x86),
+  x86_64(Architecture.amd64);
+
+  const AndroidABI(this.arch);
+  final Architecture arch;
+}
 
 /**
  * Attributes for representation purposes of the Android platform.
  */
 final class AndroidAttributes extends PlatformAttributes {
   AndroidAttributes({required this.apiLevel, required this.abi})
-    : super("android", apiLevel.version);
+      : super("android", apiLevel.version);
   final AndroidAPI apiLevel;
   final AndroidABI abi;
+
+  @override
+  Architecture get arch => abi.arch;
 }

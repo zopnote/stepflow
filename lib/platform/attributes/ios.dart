@@ -17,5 +17,5 @@ final class iOSAttributes extends PlatformAttributes {
    * The hardware architecture of the iOS device.
    * For modern iOS devices, this is typically [Architecture.aarch64].
    */
-  final Architecture architecture = Architecture.aarch64;
+  final Architecture arch = Architecture.aarch64;
 }
