@@ -1,10 +1,11 @@
 import 'package:stepflow/cli/program.dart';
 import 'package:stepflow/cli/steps/shell.dart';
+import 'package:stepflow/common.dart';
 import 'package:stepflow/common/steps/atomics.dart';
 import 'package:stepflow/platform/platform.dart' as _;
 
 class Clang extends Application {
-  const Clang(String executable) : super("clang", executable);
+  const Clang(Executable executable) : super("clang", executable);
 
   Step analyzeFiles({
     required Iterable<String> inputFiles,
@@ -80,7 +81,7 @@ class ClangAnalyze extends ConfigureStep {
 }
 
 class ClangCompile extends ConfigureStep {
-  final String executable;
+  final Executable executable;
   final Iterable<String> inputFiles;
   final String outputFile;
   final Iterable<ClangLibrary> libraries;
@@ -93,8 +94,7 @@ class ClangCompile extends ConfigureStep {
       this.libraries = const [],
       this.targetPlatform});
 
-  static String getTargetTriple() {
-
+  static String getTargetTriple({required _.Platform targetPlatform}) {
     String _architecture(_.Architecture arch) {
       switch (arch) {
         case _.Architecture.amd64:
@@ -104,7 +104,7 @@ class ClangCompile extends ConfigureStep {
         default:
           return arch.name;
       }
-    };
+    }
 
     String _vendor(_.OperatingSystem os) {
       switch (os) {
@@ -130,10 +130,21 @@ class ClangCompile extends ConfigureStep {
           return "darwin";
         case _.OperatingSystem.linux:
           return arch == _.Architecture.arm ? "gnueabihf" : "gnu";
-        case _.OperatingSystem.generic:
+        case _.OperatingSystem.android:
+          return "android";
+        case _.OperatingSystem.none:
+          return "eabi";
+        default:
+          return "none";
       }
     }
+
+    return "${_architecture(targetPlatform.attributes.arch)}-"
+        "${_vendor(targetPlatform.os)}-"
+        "${targetPlatform.os.name}-"
+        "${_abi(targetPlatform.os, targetPlatform.attributes.arch)}";
   }
+
   @override
   Step configure() {
     final List<String> arguments = [];
@@ -158,10 +169,8 @@ class ClangCompile extends ConfigureStep {
     }
 
     if (targetPlatform != null) {
-
-      {
-
-      }
+      arguments
+          .add("--target=${getTargetTriple(targetPlatform: targetPlatform!)}");
     }
     if (options.targetArchitecture != null) {
       arguments.add("-march=${options.targetArchitecture!.march}");
@@ -189,9 +198,8 @@ class ClangCompile extends ConfigureStep {
 
     arguments.addAll(options.additionalArguments);
 
-    return Shell(
-      program: executable,
-      arguments: arguments,
+    return Runnable(
+      (context) => executable.execute(arguments),
     );
   }
 }
