@@ -19,7 +19,7 @@ This opens the way for the most important step.
 The ``Bubble``, that contains logic about
 the execution of steps inside of it, most workflows will be started inside one.
 
-![workflow illustration](../../.images/workflow_illustration_1.png)
+![workflow illustration](../images/workflow_illustration_1.png)
 With ``context.pop()`` you can always escape the current bubble
 directly with an error message. With ``context.close()`` you can exit all bubbles.
 If you want an own behaviour of execution,
