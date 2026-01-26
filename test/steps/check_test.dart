@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:path/path.dart' as path;
-import 'package:stepflow/cli/steps/check.dart';
-import 'package:stepflow/common.dart';
+import 'package:stepflow/core.dart';
+import 'package:stepflow/io.dart';
 import 'package:test/test.dart';
 
 const successPattern = "TEST_CHECK_STEP_SUCCESS";

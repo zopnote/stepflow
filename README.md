@@ -71,7 +71,7 @@ class PrintOutDartVersion extends ConfigureStep {
 }
 ````
 It is a step, that will atomize itself into the steps, it is composed of. A ``ConfigureStep`` has to be extended and it`s ``configure()``-function should be overridden.
-It returns then a composition of steps. A list and explanation of the common steps can be found in their sources [here](lib/common/steps).
+It returns then a composition of steps. A list and explanation of the common steps can be found in their sources [here](lib/src/core).
 
 ## CLI
 Stepflow also comes with framework-like-styled glue code for CLI commands and flags.
@@ -88,7 +88,7 @@ A ``Command`` often consists of the following settings:
 
 **Example:**
 ````dart
-import 'package:stepflow/cli.dart';
+import 'package:stepflow/io.dart';
 
 Future<void> main(List<String> rawArgs) => runCommand(
   Command(
@@ -119,5 +119,5 @@ Future<void> main(List<String> rawArgs) => runCommand(
 );
 
 ````
-For more documentation about ``Command`` look inside the [documentation in the source files](lib/cli/command.dart).
+For more documentation about ``Command`` look inside the [documentation in the source files](lib/src/io/command.dart).
 

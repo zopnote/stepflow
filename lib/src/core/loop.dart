@@ -1,4 +1,4 @@
-import 'package:stepflow/common.dart';
+import 'package:stepflow/core.dart';
 
 /**
  * A looped chain of [Step]s.

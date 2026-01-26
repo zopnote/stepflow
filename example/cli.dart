@@ -1,4 +1,4 @@
-import 'package:stepflow/cli.dart';
+import 'package:stepflow/io.dart';
 
 Future<void> main(List<String> rawArgs) => runCommand(
   Command(

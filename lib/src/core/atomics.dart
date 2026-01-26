@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:meta/meta.dart';
-import 'package:stepflow/common.dart';
+import 'package:stepflow/core.dart';
 
 /**
  * Blueprint of the atomic representation of a step inside of workflows.

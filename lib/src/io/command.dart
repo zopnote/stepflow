@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:stepflow/cli.dart';
+import 'package:stepflow/io.dart';
 
 /**
  * Merges raw arguments into a list of arguments, based if the raw arguments

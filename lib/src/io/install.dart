@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:path/path.dart' as path;
 
-import 'package:stepflow/common.dart';
+import 'package:stepflow/core.dart';
 
 final class Install extends ConfigureStep {
   /**

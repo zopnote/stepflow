@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:stepflow/common.dart';
+import 'package:stepflow/core.dart';
 
 /**
  * Runs the [Step] as workflow and creates a [FlowContextController] for it.

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import '../workflow.dart';
+import 'workflow.dart';
 import 'atomics.dart';
 
 /**
