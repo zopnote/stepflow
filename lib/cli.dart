@@ -1,6 +1,2 @@
-export 'cli/command.dart';
-export 'cli/flag.dart';
-export 'cli/steps/check.dart';
-export 'cli/steps/install.dart';
-export 'cli/steps/shell.dart';
-export 'response.dart';
+@Deprecated("Use import 'package:stepflow/io.dart'; instead.")
+export 'io.dart';

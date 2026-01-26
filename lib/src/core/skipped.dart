@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:stepflow/common.dart';
+import 'package:stepflow/core.dart';
 
 /**
  * [Step] that just return the candidate and does nothing.

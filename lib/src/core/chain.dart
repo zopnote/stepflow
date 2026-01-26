@@ -1,4 +1,4 @@
-import 'package:stepflow/common.dart';
+import 'package:stepflow/core.dart';
 
 /**
  * A [Chain] is a [Bubble] that has a builder, which only will returning [Step]s

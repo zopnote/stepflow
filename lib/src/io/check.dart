@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:path/path.dart' as path;
-import 'package:stepflow/common.dart';
+import 'package:stepflow/core.dart';
 
 final String executableExtension = Platform.isWindows ? ".exe" : "";
 final List<String> _pathEntries =
