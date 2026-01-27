@@ -1,5 +1,3 @@
-library stepflow.platform;
-
 export 'src/platform/attributes/android.dart';
 export 'src/platform/attributes/baremetal.dart';
 export 'src/platform/attributes/ios.dart';

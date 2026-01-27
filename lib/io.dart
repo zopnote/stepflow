@@ -1,5 +1,3 @@
-library stepflow.io;
-
 export 'src/io/command.dart';
 export 'src/io/flag.dart';
 export 'src/io/steps/check.dart';

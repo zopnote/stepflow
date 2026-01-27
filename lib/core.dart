@@ -1,5 +1,3 @@
-library stepflow.core;
-
 export 'src/response.dart';
 export 'src/core/workflow.dart';
 export 'src/core/atomics.dart';
