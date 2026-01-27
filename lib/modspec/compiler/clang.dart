@@ -1,11 +1,9 @@
-import 'package:stepflow/cli/program.dart';
-import 'package:stepflow/cli/steps/shell.dart';
+import 'package:stepflow/cli.dart';
 import 'package:stepflow/common.dart';
-import 'package:stepflow/common/steps/atomics.dart';
 import 'package:stepflow/platform/platform.dart' as _;
 
 class Clang extends Application {
-  const Clang(Executable executable) : super("clang", executable);
+  const Clang(Executable executable) : super(executable);
 
   Step analyzeFiles({
     required Iterable<String> inputFiles,
@@ -30,7 +28,7 @@ class Clang extends Application {
 }
 
 class ClangAnalyze extends ConfigureStep {
-  final String executable;
+  final Executable executable;
   final Iterable<String> inputFiles;
   final ClangStaticAnalysisOptions options;
 

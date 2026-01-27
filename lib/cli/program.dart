@@ -2,15 +2,17 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:path/path.dart' as _path;
+import 'package:path/path.dart' as path;
 import 'package:stepflow/common.dart';
-import 'package:stepflow/cli/steps/shell.dart' show Shell;
 import 'package:stepflow/platform/platform.dart' as stepflow;
 import 'package:uuid/uuid.dart';
 
 import '../modspec/compiler/clang.dart';
 
-final List<String> _pathEntries =
-    Platform.environment["PATH"]?.split(Platform.isWindows ? ";" : ":") ?? [];
+abstract class Application {
+  final Executable executable;
+  const Application(this.executable);
+}
 
 class ApplicationNotFoundException implements Exception {
   final String applicationName;
@@ -19,42 +21,23 @@ class ApplicationNotFoundException implements Exception {
       : cause = "Couldn't find the application $applicationName.";
 }
 
-class ExecutionOptions {
-  /**
-   * If the program should be ran with elevated privileges.
-   */
-  final bool runAsAdministrator;
-
-  /**
-   * If the program should be run in the systems command shell.
-   */
-  final bool runInShell;
-
-  const ExecutionOptions(
-      {this.runAsAdministrator = false, this.runInShell = false});
-}
-
 class ExecutionResult {}
 
-typedef ExecutionStdout = FutureOr<void> Function(List<int> chars);
 typedef ExecutionCallback = FutureOr<ExecutionResult> Function(
     List<String> arguments,
-    [ExecutionOptions? options,
-    ExecutionStdout? onStdout,
-    ExecutionStdout? onStderr]);
+    [CommandLineInterfaceProcessOptions? options,
+    ResponseCallback? onResponse]);
 
 class Executable {
-  /**
-   * UUID of the executable for exact representation.
-   */
-  final Uuid uuid = const Uuid();
-
   final ExecutionCallback execute;
 
   const Executable(this.execute);
 
   static Executable environment(String name) {
-    final File? executable = _pathEntries
+    final List<String> pathEntries =
+        Platform.environment["PATH"]?.split(Platform.isWindows ? ";" : ":") ??
+            [];
+    final File? executable = pathEntries
         .map((pathEntry) => File(
               _path.join(
                 pathEntry,
@@ -65,28 +48,108 @@ class Executable {
     if (executable == null) {
       throw ApplicationNotFoundException(name);
     }
-    return file(executable, true);
+    return file(executable);
   }
 
+  static Executable file(File file) =>
+      Executable((arguments, [options, stdout, stderr]) async {
+        if (!(await file.exists())) return ExecutionResult();
+
+        return ExecutionResult();
+      });
+}
+
+/**
+ * Manages a command line process, initiated by this application.
+ */
+
+class CommandLineInterfaceProcessOptions {
   /**
-   * Returns formatted arguments.
+   * Either start the process with elevated privileges or as default.
    *
-   * On windows the powershell is required to acquire elevated privileges.
+   * Whenever errors occur, ensure your platform supports the behaviour of implementation the approach of
+   * [CommandLineInterfaceProcess] takes.
    */
-  static List<String> _createCLIExecutionArguments(
-      final bool runAsAdministrator,
-      final String processFilePath,
-      final String program,
-      final List<String> arguments,
-      final String workingDirectory) {
-    if (runAsAdministrator) {
-      return Platform.isWindows
+  final bool runAsAdministrator;
+
+  /**
+   * If the program should be run in the systems command shell.
+   */
+  final bool runInShell;
+
+  /**
+   * The directory, the process will be started in.
+   */
+  final String? workingDirectory;
+
+  const CommandLineInterfaceProcessOptions(
+      {this.runAsAdministrator = false,
+      this.runInShell = false,
+      this.workingDirectory});
+}
+
+typedef CommandLineInterfaceProcessOutputCallback = FutureOr<void> Function(
+    List<int> chars);
+
+class CommandLineInterfaceProcess {
+  /**
+   * Path to the executable file, that should be interfaced for.
+   * Make sure the file exists, [CommandLineInterfaceProcess] doesn't
+   * check for.
+   *
+   * Either an absolute path or relative to [workingDirectory].
+   */
+  final String? executableFilePath;
+
+  final CommandLineInterfaceProcessOptions? options;
+
+  final Process process;
+
+  final Uuid uuid;
+
+  const CommandLineInterfaceProcess(this.process, this.uuid,
+      [this.options, this.executableFilePath]);
+
+  static CommandLineInterfaceProcess fromProcess(final Process process,
+          {final CommandLineInterfaceProcessOptions? options,
+          final String? executableFilePath}) =>
+      CommandLineInterfaceProcess(
+          process, const Uuid(), options, executableFilePath);
+  /**
+   * Creates a [CommandLineInterfaceProcess] by invocate a process.
+   *
+   * - [executablePath]: Path to the executable file,
+   *   that should be interfaced for. Make sure the file exists,
+   *   [CommandLineInterfaceProcess] doesn't check for.
+   *
+   *   Either an absolute path or relative to [workingDirectory].
+   *
+   * - [arguments]: The command line arguments that should be
+   *   applied to the command invocation.
+   *
+   * - [options]: Options for the invocation of the process.
+   *
+   * - [onStdout] & [onStderr]: Listen for the output of the process.
+   */
+  static Future<CommandLineInterfaceProcess> createProcess(
+      String executablePath, List<String> arguments,
+      {final CommandLineInterfaceProcessOptions options =
+          const CommandLineInterfaceProcessOptions(),
+      final CommandLineInterfaceProcessOutputCallback? onStdout,
+      final CommandLineInterfaceProcessOutputCallback? onStderr}) async {
+    final Uuid uuid = const Uuid();
+
+    final File processValidateFile =
+        File(path.join(path.dirname(executablePath), ".$uuid"));
+
+    if (options.runAsAdministrator) {
+      executablePath = Platform.isWindows ? "powershell.exe" : "sudo";
+      arguments = Platform.isWindows
           ? [
               "-Command",
               """
-              # Set variables
-              \$targetFolder = "${workingDirectory ?? "./"}"
-              \$command = "$program"
+              \$targetFolder = "${options.workingDirectory}"
+              \$command = "$executablePath"
               \$arguments = "${arguments.join(" ")}"
               
               # Relaunch as administrator
@@ -96,120 +159,31 @@ class Executable {
                   "-Command `"Set-Location -Path '\$targetFolder'; & '\$command' \$arguments`""
               )
               
-              New-Item -ItemType File -Path "${processFilePath}"
+              New-Item -ItemType File -Path "${processValidateFile.path}"
               """,
             ]
-          : [program] + arguments;
+          : [executablePath] + arguments;
     }
-    return arguments;
-  }
-
-  /**
-   * It is necessary to detect the creation of a placeholder
-   * file, to wait for the Powershell process to finish.
-   */
-  static Future<void> _windowsWaitForPowershell(final String processFilePath) {
-    final Completer completer = Completer();
-    late final void Function() check;
-    check = () {
-      if (File(processFilePath).existsSync()) {
-        File(processFilePath).deleteSync();
-        completer.complete();
-      }
-      Timer(const Duration(seconds: 1), check);
-    };
-    check();
-    return completer.future;
-  }
-
-  /**
-   * Receives the command's first argument. (The program's name)
-   */
-  static String _createCLIProgram(
-      final bool runAsAdministrator, final String fallback) {
-    if (runAsAdministrator) {
-      return Platform.isWindows ? "powershell.exe" : "sudo";
-    }
-    return fallback;
-  }
-
-  /**
-   * Returns the composed process that will be started.
-   */
-  Future<Process> _createCLIProcess(
-          final bool runAsAdministrator,
-          final String processFilePath,
-          final String workingDirectory,
-          final String program,
-          final List<String> arguments,
-          final bool runInShell) =>
-      Process.start(
-        _createCLIProgram(runAsAdministrator, program),
-        _createCLIExecutionArguments(runAsAdministrator, processFilePath,
-            program, arguments, workingDirectory),
-        workingDirectory: workingDirectory,
-        environment: {},
+    final Process process = await Process.start(executablePath, arguments,
+        workingDirectory: options.workingDirectory,
+        environment: const {"stepflow_command_line_interface_process": "1"},
         includeParentEnvironment: true,
         mode: ProcessStartMode.normal,
-        runInShell: runInShell,
-      );
-  static Executable file(File file, [bool skipCheck = false]) {
-    if (!skipCheck && !file.existsSync()) {
-      throw FileSystemException(
-          "File \"${file.path}\" can't be found. Ensure it's availability to proceed.");
-    }
-    return Executable((arguments, [options, stdout, stderr]) async {
-      final process = await _createCLIProcess();
-      /*
-     * We have to await both futures at once with the list.
-     */
-      final List<Future<void>> futures = [];
-      process.stdout.listen((chars) {
-        if (stdout != null) {
-          futures.add(Future.value(stdout(chars)));
-        }
-      });
-      /*
-     * A full string is built for the response.
-     */
-      String fullStderr = "";
-      process.stderr.listen((chars) {
-        if (stderr != null) {
-          futures.add(Future.value(stderr(chars)));
-        }
-        fullStderr += "\n${String.fromCharCodes(chars)}";
-      });
+        runInShell: options.runInShell);
 
-      /*
-     * Await the process to be completed.
-     * Then awaits only the futures (The actions of the stdout & stderr are already done).
-     */
-      await process.exitCode;
-      await Future.wait(futures);
-
-      if (runAsAdministrator && Platform.isWindows) {
-        await _windowsWaitForPowershell();
-      }
-      context.send(
-        Response(
-          fullStderr.isNotEmpty
-              ? "An error occurred in the process: $fullStderr"
-              : "Shell step executed without any issues.",
-          Level.verbose,
-        ),
-      );
-      return ExecutionResult();
-    });
+    return CommandLineInterfaceProcess(process, uuid, options, executablePath);
   }
+
+  void kill() {}
 }
 
-abstract class Application {
-  final String name;
-  final Executable executable;
-  const Application(this.name, this.executable);
-}
+Future<void> main() async {
+  final stepflow.Platform currentPlatform = stepflow.Platform.current();
+  final Clang clang = Clang(Executable.environment("clang"));
+  await runWorkflow(Chain(steps: [
+    clang.analyzeFiles(inputFiles: [], options: ClangStaticAnalysisOptions()),
+  ]));
 
-void main() {
   stepflow.Platform.ios(sdkVersion: stepflow.Version(26, 2, 0));
   stepflow.Platform.macos(
     processor: stepflow.MacOSProcessor.applesilicon,
@@ -223,6 +197,7 @@ void main() {
       architecture: stepflow.WindowsArchitecture.x64,
       buildVersion: stepflow.WindowsBuildVersion.win11_24H2);
   final currentPlatform = stepflow.Platform.current();
+
   final Clang clang = Clang(Executable.environment("clang"));
 
   final compileStep = clang.compileFiles(
