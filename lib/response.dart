@@ -1,3 +1,5 @@
+import 'dart:async';
+
 /// Represents the importance of its [Response].
 enum Level {
   /**
@@ -58,3 +60,5 @@ final class Response {
   /// Message why this [Response] was even send.
   final String message;
 }
+
+typedef ResponseCallback = FutureOr<void> Function(Response response);
