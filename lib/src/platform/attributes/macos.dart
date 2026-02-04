@@ -1,4 +1,4 @@
-import 'package:stepflow/platform/platform.dart';
+import 'package:stepflow/platform.dart';
 
 /**
  * Common processors for macOS devices.

@@ -43,3 +43,14 @@ you should be able to depend on Stepflow.
 - Added ``workflow_dispath`` to ``dart-project-quality.yml``.
 - Updated ``dart-project-quality.yml`` to just run on ``lib/``, ``example/`` and ``test/``.
 - Removed reference to _dart2embed_-project from ``README.md``.
+
+## 2.2.0
+- Moved sources to ``src/`` and updated library aliases.
+- Deprecated all ``name``-members of the steps.
+- Added ``ProcessInterface`` to interface with cli processes.
+- Added ``Level.normal`` and deprecated ``Level.status``.
+- Removed ``clang.dart`` from WIP.
+- Added ``analysis_options.dart`` to the projects root.
+- Added ``platform.dart`` with attributes for all supported operating systems.
+- Changed ``Shell``'s usage, to extract the process invocation logic.
+- Unit tests: ``process_interface_test.dart``, ``shell_test.dart`` & ``check_test.dart``.
