@@ -8,8 +8,8 @@ enum LinuxArchitecture {
   riscv(Architecture.riscv32),
   riscv64(Architecture.riscv64);
 
-  const LinuxArchitecture(this.architecture);
-  final Architecture architecture;
+  const LinuxArchitecture(this.arch);
+  final Architecture arch;
 }
 
 /** Base attributes for a Linux platform.
@@ -26,6 +26,8 @@ class LinuxAttributes extends PlatformAttributes {
   }) : super(name, version);
   final LinuxArchitecture architecture;
   final Version version;
+  @override
+  Architecture get arch => architecture.arch;
 }
 
 class UbuntuAttributes extends LinuxAttributes {

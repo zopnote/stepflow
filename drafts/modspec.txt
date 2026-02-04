@@ -1,0 +1,2 @@
+Platform and programs should be in a separate package.
+This package is intended as a project-building tool solution.

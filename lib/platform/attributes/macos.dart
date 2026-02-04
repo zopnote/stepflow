@@ -14,12 +14,12 @@ enum MacOSProcessor {
    */
   applesilicon(Architecture.aarch64);
 
-  const MacOSProcessor(this.architecture);
+  const MacOSProcessor(this.arch);
 
   /**
    * The underlying hardware architecture.
    */
-  final Architecture architecture;
+  final Architecture arch;
 }
 
 /**
@@ -37,4 +37,7 @@ final class MacOSAttributes extends PlatformAttributes {
    * The version of the macOS SDK used for building or targeting.
    */
   final Version sdkVersion;
+
+  @override
+  Architecture get arch => processor.arch;
 }

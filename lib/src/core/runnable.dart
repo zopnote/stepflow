@@ -17,8 +17,11 @@ final class Runnable extends Step {
   /**
    * Tag describing what the [Runnable] does.
    */
-  final String name;
-  Runnable(this.run, {required this.name});
+
+  @Deprecated("Will be removed in the next major version.")
+  final String? name;
+  Runnable(this.run,
+      {@Deprecated("Will be removed in the next major version.") this.name});
 
   /**
    * Executes the [run] function and returns the candidate.
