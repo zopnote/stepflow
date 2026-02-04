@@ -7,6 +7,7 @@ import 'package:stepflow/platform/platform.dart';
  * such as microcontrollers, firmware, or single-board computers.
  */
 final class BareMetalAttributes extends PlatformAttributes {
-  const BareMetalAttributes({required this.architecture}) : super("baremetal", const Version(0, 0, 0));
-  final Architecture architecture;
+  const BareMetalAttributes({required this.arch})
+      : super("baremetal", const Version(0, 0, 0));
+  final Architecture arch;
 }

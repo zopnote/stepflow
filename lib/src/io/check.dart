@@ -28,9 +28,14 @@ final class Check extends ConfigureStep {
   /// found programs if they aren't in the systems path.
   final bool searchCanStartProcesses;
 
-  final String name;
+  /**
+   * Optional name/tag describing what this [Check] step does.
+   */
+  final String? name;
+
   const Check({
-    required this.name,
+    @Deprecated("Will be removed in the next major version.")
+    this.name,
     required this.programs,
     this.directories = const [],
     this.onFailure,
@@ -94,6 +99,12 @@ final class Check extends ConfigureStep {
     return notAvailable;
   }
 
+  /**
+   * Finalizer method to configure the check step.
+   *
+   * Searches for the specified [programs] and executes [onSuccess] or [onFailure]
+   * based on the result.
+   */
   @override
   Step configure() => Runnable(name: name, (context) {
     if (programs.isEmpty) {
