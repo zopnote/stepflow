@@ -1,4 +1,4 @@
-import 'package:stepflow/platform/platform.dart';
+import 'package:stepflow/platform.dart';
 
 enum LinuxArchitecture {
   aarch64(Architecture.aarch64),

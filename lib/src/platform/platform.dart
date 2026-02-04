@@ -1,18 +1,5 @@
 import 'dart:io' as io show Platform;
-
-import 'attributes/baremetal.dart';
-import 'attributes/ios.dart';
-import 'attributes/macos.dart';
-import 'attributes/android.dart';
-import 'attributes/linux.dart';
-import 'attributes/windows.dart';
-
-export 'attributes/baremetal.dart';
-export 'attributes/ios.dart';
-export 'attributes/macos.dart';
-export 'attributes/android.dart';
-export 'attributes/linux.dart';
-export 'attributes/windows.dart';
+import 'package:stepflow/platform.dart';
 
 extension FirstWhereOrNullExtension<E> on Iterable<E> {
   E? firstWhereOrNull(bool Function(E element) test) {

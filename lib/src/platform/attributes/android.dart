@@ -1,4 +1,4 @@
-import '../platform.dart';
+import 'package:stepflow/platform.dart';
 
 /**
  * There are several API level of an android application.

@@ -1,4 +1,4 @@
-import 'package:stepflow/platform/platform.dart';
+import 'package:stepflow/platform.dart';
 
 /**
  * Attributes for representation purposes of a bare-metal platform.
