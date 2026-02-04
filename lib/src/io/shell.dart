@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:stepflow/cli.dart';
-import 'package:stepflow/common.dart';
+import 'package:stepflow/core.dart';
+import 'package:stepflow/io.dart';
 
 /**
  * Executes a program in the systems command line.
