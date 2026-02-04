@@ -1,9 +1,6 @@
 import 'dart:async';
-import 'dart:io';
-
-import 'package:path/path.dart' as path;
+import 'package:stepflow/cli.dart';
 import 'package:stepflow/common.dart';
-import 'package:uuid/uuid.dart';
 
 /**
  * Executes a program in the systems command line.
@@ -17,12 +14,12 @@ final class Shell extends ConfigureStep {
   /**
    * If the program should be ran with elevated privileges.
    */
-  final bool runAsAdministrator;
+  final bool? runAsAdministrator;
 
   /**
    * If the program should be run in the systems command shell.
    */
-  final bool runInShell;
+  final bool? runInShell;
 
   /**
    * The name of the executable that should be invoked.
@@ -30,11 +27,6 @@ final class Shell extends ConfigureStep {
    * path variable.
    */
   final String program;
-
-  /**
-   * The command line arguments that should be applied to the command invocation.
-   */
-  final List<String> arguments;
 
   /**
    * Function that will be executed every time the process' stdout receives text.
@@ -47,9 +39,18 @@ final class Shell extends ConfigureStep {
   final FutureOr<void> Function(FlowContext context, List<int> chars)? onStderr;
 
   /**
+   * The command line arguments that should be applied to the command invocation.
+   */
+  final List<String> arguments;
+
+  /**
+   * Configuration options for the process invocation.
+   */
+  final ProcessInterfaceOptions options;
+
+  /**
    * Tag describing whatever this [Shell] does.
    */
-  @Deprecated("Will be removed in the next major version.")
   final String? name;
 
   /**
@@ -61,135 +62,31 @@ final class Shell extends ConfigureStep {
     @Deprecated("Will be removed in the next major version.") this.name,
     required this.program,
     required this.arguments,
+    this.options = const ProcessInterfaceOptions(),
     this.onStdout,
     this.onStderr,
-    this.runAsAdministrator = false,
-    this.runInShell = false,
+    @Deprecated("Will be removed in the next major version. "
+        "Switch over to Shell.options to specify if the program should be run as admin.")
+    this.runAsAdministrator,
+    @Deprecated("Will be removed in the next major version. "
+        "Switch over to Shell.options to specify if the program should be run in shell.")
+    this.runInShell,
+    @Deprecated("Will be removed in the next major version. "
+        "Switch over to Shell.options to specify the working directory.")
     this.workingDirectory,
   });
 
-  /**
-   * UUID for the placeholder file on windows.
-   */
-  final Uuid uuid = const Uuid();
-
-  /**
-   * Path of the placeholder file on windows.
-   */
-  File get _processFile => File(path.join(workingDirectory ?? "./", ".$uuid"));
-
-  /**
-   * Receives the command's first argument. (The program's name)
-   */
-  String getProgram() {
-    if (runAsAdministrator) {
-      return Platform.isWindows ? "powershell.exe" : "sudo";
-    }
-    return program;
-  }
-
-  /**
-   * Returns formatted arguments.
-   *
-   * On windows the powershell is required to acquire elevated privileges.
-   */
-  List<String> getArguments() {
-    if (runAsAdministrator) {
-      return Platform.isWindows
-          ? [
-              "-Command",
-              """
-              # Set variables
-              \$targetFolder = "${workingDirectory ?? "./"}"
-              \$command = "$program"
-              \$arguments = "${this.arguments.join(" ")}"
-              
-              # Relaunch as administrator
-              Start-Process powershell -Verb runAs -wait -ArgumentList @(
-                  "-NoProfile",
-                  "-ExecutionPolicy Bypass",
-                  "-Command `"Set-Location -Path '\$targetFolder'; & '\$command' \$arguments`""
-              )
-              
-              New-Item -ItemType File -Path "${_processFile.path}"
-              """,
-            ]
-          : [this.program] + this.arguments;
-    }
-    return this.arguments;
-  }
-
-  /**
-   * It is necessary to detect the creation of a placeholder
-   * file, to wait for the Powershell process to finish.
-   */
-  Future<void> _windowsWaitForPowershell() {
-    final Completer completer = Completer();
-    late final void Function() check;
-    check = () {
-      if (_processFile.existsSync()) {
-        _processFile.deleteSync();
-        completer.complete();
-      }
-      Timer(const Duration(seconds: 1), check);
-    };
-    check();
-    return completer.future;
-  }
-
-  /**
-   * Returns the composed process that will be started.
-   */
-  Future<Process> getProcess() => Process.start(
-        getProgram(),
-        getArguments(),
-        workingDirectory: workingDirectory,
-        environment: {},
-        includeParentEnvironment: true,
-        mode: ProcessStartMode.normal,
-        runInShell: runInShell,
-      );
-
   @override
   Step configure() => Runnable(name: name, (context) async {
-        final process = await getProcess();
-        /*
-     * We have to await both futures at once with the list.
-     */
-        final List<Future<void>> futures = [];
-        process.stdout.listen((chars) {
-          if (onStdout != null) {
-            futures.add(Future.value(onStdout!(context, chars)));
-          }
-        });
-        /*
-     * A full string is built for the response.
-     */
-        String fullStderr = "";
-        process.stderr.listen((chars) {
-          if (onStderr != null) {
-            futures.add(Future.value(onStderr!(context, chars)));
-          }
-          fullStderr += "\n${String.fromCharCodes(chars)}";
-        });
-
-        /*
-     * Await the process to be completed.
-     * Then awaits only the futures (The actions of the stdout & stderr are already done).
-     */
-        await process.exitCode;
-        await Future.wait(futures);
-
-        if (runAsAdministrator && Platform.isWindows) {
-          await _windowsWaitForPowershell();
-        }
-        context.send(
-          Response(
-            fullStderr.isNotEmpty
-                ? "An error occurred in the process: $fullStderr"
-                : "Shell step executed without any issues.",
-            Level.verbose,
-          ),
-        );
+        final ProcessInterface process = await ProcessInterface.fromEnvironment(
+            program, arguments,
+            options: ProcessInterfaceOptions(
+                runAsAdministrator:
+                    runAsAdministrator ?? options.runAsAdministrator,
+                runInShell: runInShell ?? options.runInShell,
+                workingDirectory: workingDirectory ?? options.workingDirectory),
+            onStdout: (c) => onStdout?.call(context, c),
+            onStderr: (c) => onStderr?.call(context, c));
+        await process.waitForExit();
       });
 }

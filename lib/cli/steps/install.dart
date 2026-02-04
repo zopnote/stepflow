@@ -4,6 +4,9 @@ import 'package:path/path.dart' as path;
 
 import 'package:stepflow/common.dart';
 
+/**
+ * A step that installs files and directories to a specified location.
+ */
 final class Install extends ConfigureStep {
   /**
    * Path where files should be installed to relative to the environment root.
@@ -38,14 +41,15 @@ final class Install extends ConfigureStep {
   /**
    * Tag describing what [Install] does.
    */
-  final String name;
+  final String? name;
 
   /**
    * Default const constructor.
    * All lists are set to empty ones, on default.
    */
   const Install({
-    required this.name,
+    @Deprecated("Will be removed in the next major version.")
+    this.name,
     this.installPath = "",
     this.binariesPath = "",
     this.files = const [],
@@ -99,6 +103,12 @@ final class Install extends ConfigureStep {
     });
   }
 
+  /**
+   * Finalizer method to configure the installation step.
+   *
+   * Iterates over [binariesPath] and copies matching [files] and [directories]
+   * to [installPath].
+   */
   @override
   Step configure() {
     return Runnable(name: name, (context) {
