@@ -33,7 +33,9 @@ final class FlowContextController {
   int depth = 0;
 
 
-  /// TODO: Write documentation and implement current step fully
+  /**
+   * The current step being executed in the workflow.
+   */
   Step? currentStep;
 
   /**

@@ -119,12 +119,12 @@ enum WindowsArchitecture {
   /**
    * 64-bit x86 (AMD64/Intel64).
    */
-  x64(Architecture.amd64),
+  X64(Architecture.amd64),
 
   /**
    * 32-bit x86.
    */
-  x86(Architecture.x86);
+  X86(Architecture.x86);
 
   const WindowsArchitecture(this.arch);
 
@@ -134,12 +134,29 @@ enum WindowsArchitecture {
   final Architecture arch;
 }
 
+/**
+ * Platform attributes specific to the Windows operating system.
+ */
 final class WindowsAttributes extends PlatformAttributes {
+  /**
+   * Creates a new instance of [WindowsAttributes].
+   *
+   * [architecture]: The CPU architecture of the Windows system.
+   * [buildVersion]: The specific build and version of the Windows OS.
+   */
   WindowsAttributes({required this.architecture, required this.buildVersion})
-    : super("windows", buildVersion.version);
+      : super("windows", buildVersion.version);
+
+  /**
+   * The Windows build and version information.
+   */
   final WindowsBuildVersion buildVersion;
+
+  /**
+   * The Windows-specific CPU architecture.
+   */
   final WindowsArchitecture architecture;
+
   @override
-  // TODO: implement arch
   Architecture get arch => architecture.arch;
 }

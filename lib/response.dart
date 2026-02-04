@@ -27,6 +27,16 @@ enum Level {
    * The user should be aware of this response.
    */
   warning(2),
+
+  /**
+   * If a [Response] has the [default] [normal], it just wants to let you something know.
+   * It isn't important that the user sees this, but if he wants to know whats going on,
+   * he defiantly should take a look at this response.
+   *
+   * The user can take a look at this response.
+   */
+  normal(1),
+
   /**
    * If a [Response] has the [status] [Level], it just wants to let you something know.
    * It isn't important that the user sees this, but if he wants to know whats going on,
@@ -34,6 +44,7 @@ enum Level {
    *
    * The user can take a look at this response.
    */
+  @Deprecated("Switch to Level.normal until status get's removed in the next major version.")
   status(1),
   /**
    * If a [Response] has the [verbose] [Level], it is just for debugging purposes or to find out,

@@ -168,11 +168,11 @@ class Platform<Attributes extends PlatformAttributes> {
 
     if (io.Platform.isWindows) {
       final WindowsArchitecture architecture = switch (architectureName) {
-        "x64" => WindowsArchitecture.x64,
-        "ia32" => WindowsArchitecture.x86,
+        "x64" => WindowsArchitecture.X64,
+        "ia32" => WindowsArchitecture.X86,
         "arm" => WindowsArchitecture.ARM,
         "arm64" => WindowsArchitecture.ARM64,
-        _ => WindowsArchitecture.x64,
+        _ => WindowsArchitecture.X64,
       };
 
       final String osVersionString =
