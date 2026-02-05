@@ -5,11 +5,14 @@ import 'package:stepflow/io.dart';
 void main() {
   group('ProcessInterface', () {
     test('fromEnvironment finds a common executable (e.g., cmd/sh)', () async {
+      // Use commands that exit immediately
       final exe = Platform.isWindows ? 'cmd' : 'sh';
-      final process = await ProcessInterface.fromEnvironment(exe, []);
+      final args = Platform.isWindows ? ['/c', 'exit', '0'] : ['-c', 'exit 0'];
+      final process = await ProcessInterface.fromEnvironment(exe, args);
       expect(process, isNotNull);
       expect(process.executableFilePath, contains(exe));
-      process.kill();
+      final exitCode = await process.waitForExit();
+      expect(exitCode, 0);
     });
 
     test('fromEnvironment throws ApplicationNotFoundException for non-existent app', () {
