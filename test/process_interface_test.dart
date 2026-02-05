@@ -23,28 +23,48 @@ void main() {
     });
 
     test('fromFilepath starts a process and waits for exit', () async {
-      // Use 'dart' as it's definitely available and in a known location
-      final dartExe = Platform.executable;
-      final process = await ProcessInterface.fromFilepath(dartExe, ['--version']);
-      
+      // Use a command that exists on all platforms
+      final exe = Platform.isWindows ? 'C:\\Windows\\System32\\cmd.exe' : '/bin/sh';
+      final args = Platform.isWindows ? ['/c', 'exit', '0'] : ['-c', 'exit 0'];
+
+      // Skip test if the file doesn't exist (edge case)
+      if (!File(exe).existsSync()) {
+        print('Skipping test: $exe not found');
+        return;
+      }
+
+      final process = await ProcessInterface.fromFilepath(exe, args);
+
       expect(process.isManaged, isTrue);
       final exitCode = await process.waitForExit();
       expect(exitCode, 0);
     });
 
     test('onStdout callback receives data', () async {
-      final dartExe = Platform.executable;
+      // Use echo command to test stdout callback
+      final exe = Platform.isWindows ? 'C:\\Windows\\System32\\cmd.exe' : '/bin/sh';
+      final args = Platform.isWindows
+          ? ['/c', 'echo', 'test']
+          : ['-c', 'echo test'];
+
+      // Skip test if the file doesn't exist (edge case)
+      if (!File(exe).existsSync()) {
+        print('Skipping test: $exe not found');
+        return;
+      }
+
       final List<int> output = [];
-      
+
       final process = await ProcessInterface.fromFilepath(
-        dartExe, 
-        ['--version'],
+        exe,
+        args,
         onStdout: (data) => output.addAll(data),
       );
-      
+
       await process.waitForExit();
       expect(output, isNotEmpty);
-      // Dart version output is usually on stdout (or stderr sometimes, but --version should be stdout)
+      final outputStr = String.fromCharCodes(output);
+      expect(outputStr, contains('test'));
     });
 
     test('ApplicationNotFoundException message is correct', () {
