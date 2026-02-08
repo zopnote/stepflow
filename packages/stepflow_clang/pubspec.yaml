@@ -1,0 +1,14 @@
+name: stepflow_clang
+description: Steplfow step implementation of the clang compiler
+version: 0.1.0
+
+environment:
+  sdk: ^3.10.6
+
+dependencies:
+  stepflow: ^2.2.0
+  path: ^1.9.1
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.6
