@@ -164,11 +164,11 @@ class ProcessInterface {
     final Uuid uuid = const Uuid();
 
     if (options.runAsAdministrator) {
-      path = Platform.isWindows ? "powershell.exe" : "sudo";
-      arguments = Platform.isWindows
-          ? [
-              "-Command",
-              """
+      if (Platform.isWindows) {
+        path = "powershell.exe";
+        arguments = [
+          "-Command",
+          """
               \$targetFolder = "${options.workingDirectory}"
               \$command = "$path"
               \$arguments = "${arguments.join(" ")}"
@@ -182,8 +182,14 @@ class ProcessInterface {
               
               New-Item -ItemType File -Path "${_validationFile(path, uuid).path}"
               """,
-            ]
-          : [path] + arguments;
+        ];
+      }
+      else {
+        final String? user = Platform.environment['USER'];
+        if (user != null && user.isNotEmpty && user != "root") {
+          throw Exception("The process needs root access to execute the desired commands. Ensure the permissions are provided.");
+        }
+      }
     }
     final Process process = await Process.start(path, arguments,
         workingDirectory: options.workingDirectory,
