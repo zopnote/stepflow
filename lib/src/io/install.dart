@@ -119,18 +119,8 @@ final class Install extends ConfigureStep {
             _forFile(entity);
           else if (entity is Directory)
             _forDirectory(entity);
-          else
-            context.send(
-              Response(
-                "Only files and directories will be installed.",
-                Level.verbose,
-              ),
-            );
+          /// TODO: Add something to expose the event, that symlinks etc. are not supported to install. Just Files and Directories.
         });
-        return Response(
-          "Installation complete successfully.",
-          Level.verbose,
-        );
       } catch (error) {
         return Response(error.toString(), Level.verbose);
       }

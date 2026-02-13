@@ -108,9 +108,6 @@ final class Check extends ConfigureStep {
   @override
   Step configure() => Runnable(name: name, (context) {
     if (programs.isEmpty) {
-      context.send(
-        Response("No programs received to look out for.", Level.verbose),
-      );
       return;
     }
 
@@ -124,17 +121,10 @@ final class Check extends ConfigureStep {
       if (onSuccess != null) {
         onSuccess!(context);
       }
-      context.send(Response("All programs were found without issues."));
       return;
     }
     if (onFailure != null) {
       onFailure!(context, notAvailable);
     }
-    context.send(
-      Response(
-        "Not all programs were found. Missing are ${notAvailable.join(", ")}.",
-        Level.verbose,
-      ),
-    );
   });
 }
