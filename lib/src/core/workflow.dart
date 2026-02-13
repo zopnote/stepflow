@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:stepflow/core.dart';
 
 /**
- * Runs the [Step] as workflow and creates a [FlowContextController] for it.
+ * Runs the [Step] as workflow and creates a [FlowController] for it.
  *
  * [onData] calls whenever a [Response] occurs.
  */
@@ -11,19 +11,22 @@ Future<Response> runWorkflow(
   Step step, [
   void Function(Response)? onData,
 ]) async {
-  final FlowContextController controller = FlowContextController.observed(
+  final FlowController controller = FlowController.observed(
     onData ?? (_) {},
   );
   await step.execute(controller);
-  return await controller.close();
+  return controller.close();
 }
+
+@Deprecated("FlowContextController is now FlowController.")
+typedef FlowContextController = FlowController;
 
 /**
  * Controls and contains the [FlowContext] for a workflow.
  *
- * For creating a workflow a [FlowContextController] mus be provided.
+ * For creating a workflow a [FlowController] mus be provided.
  */
-final class FlowContextController {
+final class FlowController {
   /**
    * The current depth of the workflow, characterized through the nesting of [Bubble].
    *
@@ -31,12 +34,6 @@ final class FlowContextController {
    * position of steps.
    */
   int depth = 0;
-
-
-  /**
-   * The current step being executed in the workflow.
-   */
-  Step? currentStep;
 
   /**
    * Stream of the [Response]s send by the workflow to it's consumer.
@@ -53,7 +50,7 @@ final class FlowContextController {
   /**
    * To ensure that the [Stream] is a broadcast stream, the constructor is internal.
    */
-  FlowContextController._internal(this.responses) {
+  FlowController._internal(this.responses) {
     context = FlowContext(
       (value) => depth = value,
       () => depth,
@@ -63,26 +60,52 @@ final class FlowContextController {
   }
 
   /**
-   * Constructs a [FlowContextController] with a
+   * Constructs a [FlowController] with a
    * broadcast synchronized [StreamController].
    *
    * [onData] is the listener that gets triggered whenever a [Response] is send into
    * the [FlowContext].
    */
-  factory FlowContextController.observed(void Function(Response)? onData) {
+  factory FlowController.observed(void Function(Response)? onData) {
     final StreamController<Response> controller = StreamController.broadcast(
       sync: true,
     );
     if (onData != null) {
       controller.stream.listen(onData);
     }
-    return FlowContextController._internal(controller);
+    return FlowController._internal(controller);
+  }
+
+  Future<void> createBubble(Step? Function() builder) async {
+    depth++;
+    final int initialDepth = depth;
+    final none = () => null;
+
+    /*
+     * The [decide()] function will be the candidate for every [Step] of his
+     * builder. Therefore whenever the next Step should be returned, the [Bubble]
+     * will decide if it is still open and return the next [decide()] or the actual
+     * next "[candidate]" ([Step] in execution order).
+     */
+    FutureOr<Step?> decide() async {
+      final Step? built = builder();
+      /*
+       * The [depth] of the controller will be able to change from the
+       * [Step]s the [Bubble] includes.
+       */
+      if (initialDepth > depth || built == null) {
+        return none();
+      }
+      return built.execute(this, decide);
+    }
+
+    await decide();
   }
 
   /**
-   * Closes the workflow and it's [FlowContextController].
+   * Closes the workflow and it's [FlowController].
    *
-   * The [FlowContextController] shouldn't be used after this function were called.
+   * The [FlowController] shouldn't be used after this function were called.
    */
   Future<Response> close() async {
     await responses.close();
@@ -100,7 +123,6 @@ final class FlowContext {
    * Sets the Context's depth. Mapped to it's controller.
    */
   final void Function(int value) _setDepth;
-
 
   /**
    * Gets the Context's depth. Mapped to it's controller.
