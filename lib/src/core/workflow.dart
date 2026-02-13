@@ -43,6 +43,8 @@ final class FlowContextController {
    */
   final StreamController<Response> responses;
 
+  Response? lastResponse;
+
   /**
    * The controllers [FlowContext].
    */
@@ -57,7 +59,7 @@ final class FlowContextController {
       () => depth,
       sink: responses.sink,
     );
-
+    responses.stream.listen((response) => lastResponse = response);
   }
 
   /**
@@ -85,10 +87,7 @@ final class FlowContextController {
   Future<Response> close() async {
     await responses.close();
     depth = 0;
-    return responses.stream.lastWhere(
-      (_) => true,
-      orElse: () => const Response(),
-    );
+    return lastResponse ?? const Response();
   }
 }
 

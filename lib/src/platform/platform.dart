@@ -105,7 +105,6 @@ enum OperatingSystem {
 
   /// Generic operating system without further description.
   generic,
-
 }
 
 /**
@@ -315,4 +314,10 @@ class Platform<Attributes extends PlatformAttributes> {
         os: OperatingSystem.none,
         attributes: BareMetalAttributes(arch: architecture),
       );
+
+  String name() => toString();
+
+  @override
+  String toString() =>
+      "${attributes.name == os.name ? os.name : "${os.name}-${attributes.name}"}-${attributes.arch.name}";
 }

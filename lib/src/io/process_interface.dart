@@ -47,6 +47,8 @@ class ProcessInterfaceOptions {
    */
   final bool runAsAdministrator;
 
+  final Map<String, String> environment;
+
   /**
    * If the program should be run in the systems command shell.
    */
@@ -60,7 +62,8 @@ class ProcessInterfaceOptions {
   const ProcessInterfaceOptions(
       {this.runAsAdministrator = false,
       this.runInShell = false,
-      this.workingDirectory});
+      this.workingDirectory,
+      this.environment = const {}});
 }
 
 /**
@@ -184,8 +187,7 @@ class ProcessInterface {
     }
     final Process process = await Process.start(path, arguments,
         workingDirectory: options.workingDirectory,
-        /// TODO: Umgebungsvariablen müssen durchgereicht werden.
-        environment: const {"environment_stepflow": "1"},
+        environment: {"environment_stepflow": "1"}..addAll(options.environment),
         includeParentEnvironment: true,
         mode: ProcessStartMode.normal,
         runInShell: options.runInShell);
