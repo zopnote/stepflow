@@ -13,7 +13,7 @@ final class Skipped extends Step {
    */
   @override
   FutureOr<Step?> execute(
-    final FlowContextController controller, [
+    final FlowController controller, [
     FutureOr<Step?> candidate()?,
   ]) {
     return (candidate ?? () => null)();

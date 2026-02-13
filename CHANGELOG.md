@@ -63,5 +63,11 @@ you should be able to depend on Stepflow.
 - Added ``Response.isError``
 - Fixed the issue, that ``runWorkflow`` never really returned the last ``Response``
 
-# 2.2.2
+## 2.2.2
 - Fixed that the process gets executed with sudo on unix if the process required elevated privileges but can't even provide the sudo passwd.
+
+## main (unreleased, wip)
+- Renamed ``FlowContextController`` to ``FlowController``
+- Deprecated ``Bubble`` and moved its logic to ``FlowController``
+- Moved steps to ``<sublib>/steps/``
+- Implemented new logic of ``Bubble``s into ``chain.dart``
