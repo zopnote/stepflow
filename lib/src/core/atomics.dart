@@ -22,7 +22,7 @@ abstract class Step {
    * For an example look at the implementation of [Bubble].
    */
   FutureOr<Step?> execute(
-    final FlowContextController controller, [
+    final FlowController controller, [
     FutureOr<Step?> candidate()?,
   ]);
 }
@@ -46,7 +46,7 @@ abstract class ConfigureStep extends Step {
    */
   @override
   FutureOr<Step?> execute(
-    final FlowContextController controller, [
+    final FlowController controller, [
     FutureOr<Step?> candidate()?,
   ]) => this.configure().execute(controller, candidate);
 }
@@ -67,6 +67,7 @@ abstract class ConfigureStep extends Step {
  * As example, in the [Chain] step,
  * [leave] is set to true whenever the length of the steps is reached.
  */
+@Deprecated("Move over to FlowController.createBubble")
 abstract class Bubble extends Step {
   /**
    * Marks if the [Bubble] should be closed after the current running [Step].
@@ -96,39 +97,11 @@ abstract class Bubble extends Step {
    */
   @override
   FutureOr<Step?> execute(
-      final FlowContextController controller, [
+      final FlowController controller, [
         FutureOr<Step?> candidate()?,
       ]) async {
-    controller.depth++;
-    final int initialDepth = controller.depth;
+    await controller.createBubble(() => !leave ? builder() : null);
     final none = () => null;
-
-    /*
-     * The [decide()] function will be the candidate for every [Step] of his
-     * builder. Therefore whenever the next Step should be returned, the [Bubble]
-     * will decide if it is still open and return the next [decide()] or the actual
-     * next "[candidate]" ([Step] in execution order).
-     */
-    FutureOr<Step?> decide() async {
-
-      /*
-       * The [depth] of the controller will be able to change from the
-       * [Step]s the [Bubble] includes.
-       */
-      if (initialDepth > controller.depth) {
-        return (candidate ?? none)();
-      }
-
-      /*
-       * In a derived class, leave can be set to leave the [Bubble] successfully.
-       * (Just without an error message)
-       */
-      if (leave) {
-        controller.depth--;
-        return (candidate ?? none)();
-      }
-      return builder().execute(controller, decide);
-    }
-    return decide();
+    return (candidate ?? none)();
   }
 }

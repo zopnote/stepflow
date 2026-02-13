@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:meta/meta.dart';
+import 'package:stepflow/core.dart';
 
-import 'workflow.dart';
-import 'atomics.dart';
 
 /**
  * Executes the [run] function as atomic part of a workflow.
@@ -29,7 +28,7 @@ final class Runnable extends Step {
   @protected
   @override
   Future<Step?> execute(
-    final FlowContextController controller, [
+    final FlowController controller, [
     FutureOr<Step?> candidate()?,
   ]) async {
     await run(controller.context);

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:stepflow/core.dart';
 
 /**
@@ -6,14 +8,14 @@ import 'package:stepflow/core.dart';
  *
  * If you want an infinite [Chain], create your own [Bubble].
  */
-final class Chain extends Bubble {
+final class Chain extends Step {
 
   /**
-   * The [build] function has to return a [Step] until the index is as high,
+   * The [builder] function has to return a [Step] until the index is as high,
    * as the length allows. The function will be executed every time,
    * the forgoing [Step] is done with it's execution.
    */
-  late final Step Function(int index) build;
+  late final Step Function(int index) builder;
 
   /**
    * The [length] parameter is the length of the [Chain]
@@ -21,7 +23,7 @@ final class Chain extends Bubble {
    */
   final int length;
 
-  Chain._internal({required this.build, required this.length});
+  Chain._internal({required this.builder, required this.length});
 
   /**
    * A [Chain] that consists of a [List] of [Step].
@@ -31,7 +33,7 @@ final class Chain extends Bubble {
    */
   factory Chain({required List<Step> steps}) {
     return Chain._internal(
-      build: (index) {
+      builder: (index) {
         return steps[index];
       },
       length: steps.length,
@@ -44,23 +46,21 @@ final class Chain extends Bubble {
    * Will execute the builder's [Step]s, if the context won't [pop()] or [close()].
    */
   factory Chain.builder(Step builder(int index), {required final int length}) {
-    return Chain._internal(build: builder, length: length);
+    return Chain._internal(builder: builder, length: length);
   }
 
   /**
    * The [index] of the currently ongoing [Step].
    */
-  int _index = 0;
+  int _i = 0;
 
   /**
    * The [builder()] of the [Chain]'s execution order.
    */
   @override
-  Step builder() {
-    if (_index == length - 1) {
-      leave = true;
-      return build(_index++);
-    }
-    return build(_index++);
+  Future<Step?> execute(FlowController controller, [FutureOr<Step?> candidate()?]) async {
+    await controller.createBubble(() => _i != length ? builder(_i++) : null);
+    final none = () => null;
+    return (candidate ?? none)();
   }
 }

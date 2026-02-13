@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 
 import 'package:stepflow/core.dart';
+import 'package:stepflow/io.dart';
 
 /**
  * A step that installs files and directories to a specified location.
@@ -44,6 +45,8 @@ final class Install extends ConfigureStep {
   final String? name;
 
   /**
+   * A step that installs files and directories to a specified location.
+   *
    * Default const constructor.
    * All lists are set to empty ones, on default.
    */

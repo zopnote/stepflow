@@ -3,6 +3,7 @@ import 'package:stepflow/core.dart';
 /**
  * A looped chain of [Step]s.
  */
+@Deprecated("Move over to FlowController.createBubble")
 final class Loop extends Bubble {
 
   /**
