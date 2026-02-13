@@ -54,3 +54,11 @@ you should be able to depend on Stepflow.
 - Added ``platform.dart`` with attributes for all supported operating systems.
 - Changed ``Shell``'s usage, to extract the process invocation logic.
 - Unit tests: ``process_interface_test.dart``, ``shell_test.dart`` & ``check_test.dart``.
+
+## 2.2.1
+- Removed responses in check.dart
+- Removed responses in install.dart
+- Added ``toString()`` and ``name()`` to platform.dart
+- Added environment variables to ``options`` of ``PlatformInterface``
+- Added ``Response.isError``
+- Fixed the issue, that ``runWorkflow`` never really returned the last ``Response``
