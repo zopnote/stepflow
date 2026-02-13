@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 
 import 'package:stepflow/core.dart';
-import 'package:stepflow/io.dart';
 
 /**
  * A step that installs files and directories to a specified location.
