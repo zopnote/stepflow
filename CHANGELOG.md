@@ -62,3 +62,6 @@ you should be able to depend on Stepflow.
 - Added environment variables to ``options`` of ``PlatformInterface``
 - Added ``Response.isError``
 - Fixed the issue, that ``runWorkflow`` never really returned the last ``Response``
+
+# 2.2.2
+- Fixed that the process gets executed with sudo on unix if the process required elevated privileges but can't even provide the sudo passwd.
