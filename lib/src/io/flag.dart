@@ -88,9 +88,9 @@ class Flag<T> {
    *
    * Used as part of [Command.syntaxMessage()].
    */
-  String syntaxString() {
+  String syntaxString({final int spacer = 13}) {
     String syntax = "--${name}";
-    final int space = 13 - name.length;
+    final int space = spacer - name.length;
     if (description.isNotEmpty) {
       syntax = syntax + (" " * space) + "${description}";
     }
