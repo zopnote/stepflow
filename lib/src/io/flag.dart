@@ -105,8 +105,8 @@ class Flag<T> {
  * A flag that contains a [String] as it's value.
  */
 final class TextFlag extends Flag<String> {
-  TextFlag({required super.name, super.description})
-    : super(value: "", format: _format, parse: _parse);
+  TextFlag({required super.name, super.description, super.value = ""})
+    : super(format: _format, parse: _parse);
 
   static String _format(String value) => value;
 
