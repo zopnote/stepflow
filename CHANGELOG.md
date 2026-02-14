@@ -72,3 +72,7 @@ you should be able to depend on Stepflow.
 - Moved steps to ``<sublib>/steps/``
 - Implemented new logic of ``Bubble``s into ``chain.dart``
 - Opened the default value of ``TextFlag``
+
+## 2.3.1
+- Added a default help flag to every command
+- Updated cmd syntax formatting to support custom space

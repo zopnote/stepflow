@@ -12,16 +12,13 @@ List<String> _mergeArguments(List<String> rawArguments) {
   String mergeableArgument = "";
   bool isOpen = false;
   for (final String rawArgument in rawArguments) {
-    mergeableArgument += mergeableArgument.isEmpty
-        ? rawArgument
-        : " " + rawArgument;
+    mergeableArgument +=
+        mergeableArgument.isEmpty ? rawArgument : " " + rawArgument;
     for (int k = 0; k < rawArgument.length - 1; k++) {
-      final bool isIgnorable = k > 0
-          ? rawArgument[k - 1].contains("\\")
-          : false;
-      isOpen = (rawArgument[k].contains("\"") && !isIgnorable)
-          ? !isOpen
-          : isOpen;
+      final bool isIgnorable =
+          k > 0 ? rawArgument[k - 1].contains("\\") : false;
+      isOpen =
+          (rawArgument[k].contains("\"") && !isIgnorable) ? !isOpen : isOpen;
     }
     if (!isOpen) {
       mergedArguments.add(mergeableArgument);
@@ -71,6 +68,7 @@ Future<int> runCommand(
   Command command, [
   final List<String> rawArguments = const [],
   final List<Flag> globalFlags = const [],
+  final bool defaultHelpFlag = true
 ]) async {
   List<Flag> flags = command.flags;
   String argument = "";
@@ -102,12 +100,18 @@ Future<int> runCommand(
       break;
     }
   }
-
   /*
    * Adds the global flags the current's command flags.
    * Set's then the [flags] list with the parsed values of [flagArgs].
    */
   flags += globalFlags;
+  if (defaultHelpFlag) {
+    flags.add(BoolFlag(
+        name: "help",
+        value: false,
+        description: "Displays information "
+            "about the command and its flags."));
+  }
   _parseAndSetFlags(flagArgs, flags);
 
   Response? response;
@@ -117,7 +121,8 @@ Future<int> runCommand(
     stderr.writeln(e);
   }
 
-  final bool isError = response?.level == Level.error || response?.level == Level.critical;
+  final bool isError =
+      response?.level == Level.error || response?.level == Level.critical;
   final String responseMsg = response?.message ?? "";
 
   if (isError) {
@@ -208,7 +213,7 @@ class Command {
    * [withFlags] will decide if the flags should
    * also be printed into the syntax.
    */
-  String formatSyntax({final bool withFlags = true}) {
+  String formatSyntax({final bool withFlags = true, final int spacer = 13}) {
     String syntax = "$description\n";
     if (subCommands.isNotEmpty) {
       syntax = syntax + "\nAvailable commands:\n";
@@ -221,8 +226,7 @@ class Command {
       for (final Command subCommand in subCommands) {
         if (subCommand.hidden) continue;
         final int space = useLongest + 3 - subCommand.use.length;
-        syntax =
-            syntax +
+        syntax = syntax +
             subCommand.use +
             (" " * space) +
             subCommand.description +
@@ -232,7 +236,7 @@ class Command {
     if (flags.isNotEmpty && withFlags) {
       syntax += "\nCommand avertable flags:\n";
       for (final Flag flag in flags) {
-        syntax += flag.syntaxString() + "\n";
+        syntax += flag.syntaxString(spacer: spacer) + "\n";
       }
     }
     if (flags.isEmpty && subCommands.isEmpty && !withFlags) {
