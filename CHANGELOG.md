@@ -76,3 +76,7 @@ you should be able to depend on Stepflow.
 ## 2.3.1
 - Added a default help flag to every command
 - Updated cmd syntax formatting to support custom space
+
+## 2.3.2
+- Added ``printLast`` option to ``runCommand()``
+- Added ``LogASCIIContext``-``Step`` to ``stepflow.io/steps``

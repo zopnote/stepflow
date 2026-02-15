@@ -68,7 +68,8 @@ Future<int> runCommand(
   Command command, [
   final List<String> rawArguments = const [],
   final List<Flag> globalFlags = const [],
-  final bool defaultHelpFlag = true
+  final bool defaultHelpFlag = true,
+  final bool printLast = true,
 ]) async {
   List<Flag> flags = command.flags;
   String argument = "";
@@ -124,7 +125,9 @@ Future<int> runCommand(
   final bool isError =
       response?.level == Level.error || response?.level == Level.critical;
   final String responseMsg = response?.message ?? "";
-
+  if (!printLast) {
+    return isError ? 1 : 0;
+  }
   if (isError) {
     stderr.writeln(
       "An error occurred" + (responseMsg.isEmpty ? "." : ": $responseMsg"),
