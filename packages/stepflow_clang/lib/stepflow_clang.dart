@@ -213,7 +213,7 @@ class ClangCompiler {
     required final List<File> input,
     required final File output,
     final List<NativeLibrary> libraries = const [],
-    final List<String> macros = const [],
+    final Map<String, String> macros = const {},
     ClangCompileTarget? target,
     final ClangLanguage? language,
     final bool generateDebugInfo = false,
@@ -530,6 +530,9 @@ void main() {
     output: File(""),
     language: ClangLanguage.c23,
     buildType: ClangBuildType.executable,
+    macros: [
+      "SYSTEMD"
+    ],
     libraries: [
       NativeLibrary(header: header, binary: binary)
     ],
