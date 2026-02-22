@@ -6,7 +6,8 @@ environment:
   sdk: ^3.10.6
 
 dependencies:
-  stepflow: ^2.2.0
+  stepflow:
+    path: ../../
   path: ^1.9.1
 
 dev_dependencies:

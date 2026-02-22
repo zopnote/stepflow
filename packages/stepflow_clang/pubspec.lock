@@ -284,11 +284,10 @@ packages:
   stepflow:
     dependency: "direct main"
     description:
-      name: stepflow
-      sha256: "581c04283b413e47d003e89959d6de55d904d5344ee8118dee8c388403c2164b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.0"
+      path: "../.."
+      relative: true
+    source: path
+    version: "2.3.2"
   stream_channel:
     dependency: transitive
     description:

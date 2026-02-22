@@ -1,4 +1,4 @@
-import 'package:stepflow_clang/stepflow_clang.dart';
+import 'package:stepflow_clang/clang.dart';
 import 'package:test/test.dart';
 
 void main() {

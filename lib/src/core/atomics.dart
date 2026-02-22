@@ -24,12 +24,14 @@ abstract class Step {
   FutureOr<Step?> execute(
     final FlowController controller, [
     FutureOr<Step?> candidate()?,
-  ]);
+  ]) =>
+      (candidate ?? () => null)();
 }
 
 /**
  * A [ConfigureStep] will build it's [configure()] function into the smallest parts and executes them.
  */
+@immutable
 abstract class ConfigureStep extends Step {
   const ConfigureStep();
 
@@ -45,12 +47,52 @@ abstract class ConfigureStep extends Step {
    * A [ConfigureStep] will just executes it's underlying [Step]s of [configure()].
    */
   @override
+  @protected
   FutureOr<Step?> execute(
     final FlowController controller, [
     FutureOr<Step?> candidate()?,
-  ]) => this.configure().execute(controller, candidate);
+  ]) =>
+      this.configure().execute(controller, candidate);
 }
 
+@immutable
+abstract class CollectionStep<T extends CollectionStep<T>> extends Step {
+  const CollectionStep();
+
+  @override
+  @protected
+  FutureOr<Step?> execute(FlowController controller,
+      [FutureOr<Step?> Function()? candidate]) {
+    return super.execute(controller, candidate);
+  }
+
+  @protected
+  Step stepwise<S extends SingleStep<T, C>, C extends StepWiser<T, C, S>>(
+      C settings) {
+    return settings.stepwise(this as T);
+  }
+}
+
+@immutable
+mixin StepWiser<T extends CollectionStep<T>, C extends StepWiser<T, C, S>,
+    S extends SingleStep<T, C>> {
+  @protected
+  Step stepwise(T collection) {
+    S step = create();
+    step.wise = this as C;
+    step.step = collection;
+    return step;
+  }
+
+  @protected
+  S create();
+}
+
+abstract class SingleStep<T extends CollectionStep<T>,
+    C extends StepWiser<T, C, SingleStep<T, C>>> extends ConfigureStep {
+  late final T step;
+  late final C wise;
+}
 
 /**
  * A [Bubble] is a [Step] that consists of running a builder function,
@@ -97,9 +139,9 @@ abstract class Bubble extends Step {
    */
   @override
   FutureOr<Step?> execute(
-      final FlowController controller, [
-        FutureOr<Step?> candidate()?,
-      ]) async {
+    final FlowController controller, [
+    FutureOr<Step?> candidate()?,
+  ]) async {
     await controller.createBubble(() => !leave ? builder() : null);
     final none = () => null;
     return (candidate ?? none)();
