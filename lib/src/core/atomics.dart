@@ -27,12 +27,12 @@ abstract class Step {
   ]) =>
       (candidate ?? () => null)();
 
-  Future<Response> call() async {
-     return runWorkflow(this, (response) {
-       if (response.isError) {
-         throw Exception(response);
-       }
-     });
+  Future<Response> call([FlowController? controller]) async {
+    controller ??= FlowController.observed(
+      (r) => r.isError ? throw Exception(r) : null,
+    );
+    await this.execute(controller);
+    return controller.close();
   }
 }
 

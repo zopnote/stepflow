@@ -125,10 +125,7 @@ class ProcessInterface {
               ),
             ))
         .firstWhereOrNull((file) => file.existsSync());
-    if (file == null) {
-      throw ApplicationNotFoundException(programName);
-    }
-    return fromFilepath(file.path, arguments,
+    return fromFilepath(file?.path ?? programName, arguments,
         options: options, onStdout: onStdout, onStderr: onStderr);
   }
 
@@ -158,9 +155,6 @@ class ProcessInterface {
       {final ProcessInterfaceOptions options = const ProcessInterfaceOptions(),
       final ProcessInterfaceOutputCallback? onStdout,
       final ProcessInterfaceOutputCallback? onStderr}) async {
-    if (!File(path).existsSync()) {
-      throw ApplicationNotFoundException(path);
-    }
     final Uuid uuid = const Uuid();
 
     if (options.runAsAdministrator) {

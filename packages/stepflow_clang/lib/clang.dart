@@ -1,6 +1,7 @@
 import 'dart:io' show Directory, File;
 
 import 'package:stepflow/core.dart';
+import 'package:stepflow/io.dart';
 import 'package:stepflow_clang/src/analyze.dart';
 import 'package:stepflow_clang/src/compile.dart';
 import 'package:stepflow_clang/src/format.dart';
@@ -28,7 +29,6 @@ class Clang extends CollectionStep<Clang> {
 }
 
 void test() {
-  Clang clang = Clang(executable: File(""), workingDirectory: Directory(""));
 
   clang.compile(
     ClangCompileSettings(
@@ -42,7 +42,9 @@ void test() {
     ),
   );
 
-  clang.analyze(
+  Shell(program: "echo", arguments: ["Hello world!"])();
+
+  Clang(executable: File(""), workingDirectory: Directory("")).analyze(
     ClangAnalyzeSettings(
       input: [],
       report: ClangReportSettings(warningLevel: .all),
@@ -50,5 +52,5 @@ void test() {
       mode: .deep,
       outputType: .text,
     ),
-  );
+  )();
 }
