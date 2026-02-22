@@ -1,22 +1,19 @@
-> "-unsure" means that the interface is not yet stable.
-
-## 1.0.0-unsure
+## 1.0.0
+Mistake on versioning, 1.x.x is unstable.
 
 - Base workflow structure
 - Essential steps
 - Commands & flags structure (cmdline)
 - CLI steps for toolchain development
 
-## 1.0.1-unsure
+## 1.0.1
+Mistake on versioning, 1.x.x is unstable.
 - Added ``onFailure()`` & ``onSuccess()`` to the ``Check``-step.
 - Fixed the output of ``Check`` when ``canStartProcesses`` is set to ``false``.
 - Fixed directory look-up of ``Check``.
 - Added ``Check`` unit test.
 
 ## 2.0.0
-From now on, the interface will be stable for a longer period. 
-I apologize for the fast change of the last interface, 
-you should be able to depend on Stepflow.
 
 - Added ``runWorkflow()`` and ``runCommand()`` instead of class methods.
 - Added ``Bubble`` & ``Loop``.
@@ -80,3 +77,8 @@ you should be able to depend on Stepflow.
 ## 2.3.2
 - Added ``printLast`` option to ``runCommand()``
 - Added ``LogASCIIContext``-``Step`` to ``stepflow.io/steps``
+
+## 2.3.3 (WIP)
+- Added ``CollectionStep``, ``StepWiser`` & ``SingleStep`` to create 
+a superordinary ``Step``-Container for full API-references,
+e.g. for ``stepflow_clang``.
