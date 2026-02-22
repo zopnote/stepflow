@@ -26,6 +26,14 @@ abstract class Step {
     FutureOr<Step?> candidate()?,
   ]) =>
       (candidate ?? () => null)();
+
+  Future<Response> call() async {
+     return runWorkflow(this, (response) {
+       if (response.isError) {
+         throw Exception(response);
+       }
+     });
+  }
 }
 
 /**

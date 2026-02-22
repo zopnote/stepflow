@@ -73,6 +73,9 @@ final class Response {
 
   /// Returns if the level is greater than 3, what an error indicates.
   bool get isError => level.value >= 3;
+
+  @override
+  String toString() => message;
 }
 
 typedef ResponseCallback = FutureOr<void> Function(Response response);
