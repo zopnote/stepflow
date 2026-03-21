@@ -1,6 +1,6 @@
 ![logo](.github/images/logo.png)
 
-[![Stability of main branch](https://github.com/zopnote/stepflow/actions/workflows/dart-project-quality.yml/badge.svg)](https://github.com/zopnote/stepflow/actions/workflows/dart-project-quality.yml)
+[![Stability of main branch](https://github.com/zopnote/stepflow/actions/workflows/main-analysis.yml/badge.svg)](https://github.com/zopnote/stepflow/actions/workflows/dart-project-quality.yml)
 [![Latest release](https://img.shields.io/github/v/release/zopnote/stepflow?include_prereleases&label=Latest%20release)](https://github.com/zopnote/stepflow/releases)
 # stepflow - Modular workflow composition
 
