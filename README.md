@@ -1,17 +1,16 @@
-![logo](.github/images/logo.png)
-
+# ![logo](.github/images/logo.png)
 [![Stability of main branch](https://github.com/zopnote/stepflow/actions/workflows/main-analysis.yml/badge.svg)](https://github.com/zopnote/stepflow/actions/workflows/dart-project-quality.yml)
 [![Latest release](https://img.shields.io/github/v/release/zopnote/stepflow?include_prereleases&label=Latest%20release)](https://github.com/zopnote/stepflow/releases)
-# stepflow - Modular workflow composition
 
-A Dart package for building modular workflows. 
+A package for building modular workflows in Dart. 
+
 It introduces step-based composition, where each step is a self-contained unit of logic or interaction. 
 The structure makes it easier to break down processes into more reusable steps. Improving clarity, 
 testability, and maintainability of toolchains or workflows. It's like Flutter but for workloads.
 
 Install with:
 ````bash
-dart pub add stepflow
+$ dart pub add stepflow
 ````
 
 ## Common workflow design
