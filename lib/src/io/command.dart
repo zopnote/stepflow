@@ -64,6 +64,9 @@ void _parseAndSetFlags(
  *
  * [globalFlags] are available for every command, regardless of [inheritFlags].
  */
+@Deprecated("The CLI-tooling of stepflow is deprecated and will be removed in the next major version."
+    " stepflow's command line stuff is moved out of the package into the pub.dev-package natrix. "
+    "If you want to use the command features further migrate over.")
 Future<int> runCommand(
   Command command, [
   final List<String> rawArguments = const [],
@@ -149,11 +152,17 @@ Future<int> runCommand(
  *
  * Stepflow provides you this structure by it's [Command].
  */
+@Deprecated("The CLI-tooling of stepflow is deprecated and will be removed in the next major version."
+    " stepflow's command line stuff is moved out of the package into the pub.dev-package natrix. "
+    "If you want to use the command features further migrate over.")
 class Command {
   /**
    * Instantiates a command with the given values.
    * A command is an action, callable inside the cli.
    */
+  @Deprecated("The CLI-tooling of stepflow is deprecated and will be removed in the next major version."
+      " stepflow's command line stuff is moved out of the package into the pub.dev-package natrix. "
+      "If you want to use the command features further migrate over.")
   Command({
     required this.use,
     required this.description,
@@ -252,11 +261,17 @@ class Command {
 /**
  * Information about the context of execution of a command line prompt.
  */
+@Deprecated("The CLI-tooling of stepflow is deprecated and will be removed in the next major version."
+    " stepflow's command line stuff is moved out of the package into the pub.dev-package natrix. "
+    "If you want to use the command features further migrate over.")
 final class CommandInformation {
   final Command command;
   final String argument;
   final List<Flag> flags;
 
+  @Deprecated("The CLI-tooling of stepflow is deprecated and will be removed in the next major version."
+      " stepflow's command line stuff is moved out of the package into the pub.dev-package natrix. "
+      "If you want to use the command features further migrate over.")
   CommandInformation(this.command, this.argument, this.flags);
 
   /**
