@@ -1,6 +1,4 @@
-
 import 'package:stepflow/core.dart';
-
 
 /**
  * A [Conditional] is a simple [ConfigureStep] that will either return its child or a

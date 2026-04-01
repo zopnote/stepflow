@@ -34,8 +34,7 @@ final class Check extends ConfigureStep {
   final String? name;
 
   const Check({
-    @Deprecated("Will be removed in the next major version.")
-    this.name,
+    @Deprecated("Will be removed in the next major version.") this.name,
     required this.programs,
     this.directories = const [],
     this.onFailure,
@@ -107,24 +106,24 @@ final class Check extends ConfigureStep {
    */
   @override
   Step configure() => Runnable(name: name, (context) {
-    if (programs.isEmpty) {
-      return;
-    }
+        if (programs.isEmpty) {
+          return;
+        }
 
-    final List<String> notAvailable = search(
-      programs,
-      directories,
-      searchCanStartProcesses,
-    );
+        final List<String> notAvailable = search(
+          programs,
+          directories,
+          searchCanStartProcesses,
+        );
 
-    if (notAvailable.isEmpty) {
-      if (onSuccess != null) {
-        onSuccess!(context);
-      }
-      return;
-    }
-    if (onFailure != null) {
-      onFailure!(context, notAvailable);
-    }
-  });
+        if (notAvailable.isEmpty) {
+          if (onSuccess != null) {
+            onSuccess!(context);
+          }
+          return;
+        }
+        if (onFailure != null) {
+          onFailure!(context, notAvailable);
+        }
+      });
 }

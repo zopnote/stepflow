@@ -1,6 +1,10 @@
 import 'dart:async';
 
 /// Represents the importance of its [Response].
+@Deprecated("Responses and their Level describer will be "
+    "removed in the next major version in favor"
+    "of error handling through a dedicated error handler "
+    "which will be implemented in the next minor versions.")
 enum Level {
   /**
    * If a [Response] has the [critical] [Level], it implies
@@ -44,7 +48,6 @@ enum Level {
    *
    * The user can take a look at this response.
    */
-  @Deprecated("Switch to Level.normal until status get's removed in the next major version.")
   status(1),
   /**
    * If a [Response] has the [verbose] [Level], it is just for debugging purposes or to find out,
@@ -52,6 +55,7 @@ enum Level {
    * If the user wants extra information, they should look at this response.
    */
   verbose(0);
+
   const Level(this.value);
   final int value;
 }
@@ -59,6 +63,10 @@ enum Level {
 /**
  * A [Response] is a message send by a working unit, to communicate with its user.
  */
+@Deprecated("Responses and their Level describer will be "
+    "removed in the next major version in favor"
+    "of error handling through a dedicated error handler "
+    "which will be implemented in the next minor versions.")
 final class Response {
   /**
    * A [Response] is a message send by a working unit, to communicate with its user.

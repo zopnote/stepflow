@@ -7,6 +7,7 @@ import 'package:stepflow/io.dart';
  * Merges raw arguments into a list of arguments, based if the raw arguments
  * were enclosed by quotes.
  */
+@deprecated
 List<String> _mergeArguments(List<String> rawArguments) {
   final List<String> mergedArguments = [];
   String mergeableArgument = "";
@@ -31,6 +32,7 @@ List<String> _mergeArguments(List<String> rawArguments) {
 /**
  * Parses the flags from the arguments and sets the flags of list their values.
  */
+@deprecated
 void _parseAndSetFlags(
   final Iterable<String> flagArgs,
   final Iterable<Flag> flags,
@@ -64,9 +66,10 @@ void _parseAndSetFlags(
  *
  * [globalFlags] are available for every command, regardless of [inheritFlags].
  */
-@Deprecated("The CLI-tooling of stepflow is deprecated and will be removed in the next major version."
-    " stepflow's command line stuff is moved out of the package into the pub.dev-package natrix. "
-    "If you want to use the command features further migrate over.")
+@Deprecated("Everything relating to the creation of commands "
+    "and flags will be removed from Stepflow in the next major update."
+    "The features have been extracted into the Dart package natrix "
+    "and have undergone a general overhaul.")
 Future<int> runCommand(
   Command command, [
   final List<String> rawArguments = const [],
@@ -152,17 +155,15 @@ Future<int> runCommand(
  *
  * Stepflow provides you this structure by it's [Command].
  */
-@Deprecated("The CLI-tooling of stepflow is deprecated and will be removed in the next major version."
-    " stepflow's command line stuff is moved out of the package into the pub.dev-package natrix. "
-    "If you want to use the command features further migrate over.")
+@Deprecated("Everything relating to the creation of commands "
+    "and flags will be removed from Stepflow in the next major update."
+    "The features have been extracted into the Dart package natrix "
+    "and have undergone a general overhaul.")
 class Command {
   /**
    * Instantiates a command with the given values.
    * A command is an action, callable inside the cli.
    */
-  @Deprecated("The CLI-tooling of stepflow is deprecated and will be removed in the next major version."
-      " stepflow's command line stuff is moved out of the package into the pub.dev-package natrix. "
-      "If you want to use the command features further migrate over.")
   Command({
     required this.use,
     required this.description,
@@ -261,17 +262,16 @@ class Command {
 /**
  * Information about the context of execution of a command line prompt.
  */
-@Deprecated("The CLI-tooling of stepflow is deprecated and will be removed in the next major version."
-    " stepflow's command line stuff is moved out of the package into the pub.dev-package natrix. "
-    "If you want to use the command features further migrate over.")
+
+@Deprecated("Everything relating to the creation of commands "
+    "and flags will be removed from Stepflow in the next major update."
+    "The features have been extracted into the Dart package natrix "
+    "and have undergone a general overhaul.")
 final class CommandInformation {
   final Command command;
   final String argument;
   final List<Flag> flags;
 
-  @Deprecated("The CLI-tooling of stepflow is deprecated and will be removed in the next major version."
-      " stepflow's command line stuff is moved out of the package into the pub.dev-package natrix. "
-      "If you want to use the command features further migrate over.")
   CommandInformation(this.command, this.argument, this.flags);
 
   /**

@@ -1,6 +1,5 @@
 import 'package:stepflow/io.dart';
 
-
 Future<void> main(List<String> rawArgs) => runCommand(
       Command(
         use: "my_cli",

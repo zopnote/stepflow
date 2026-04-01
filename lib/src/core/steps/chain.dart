@@ -9,20 +9,6 @@ import 'package:stepflow/core.dart';
  * If you want an infinite [Chain], create your own [Bubble].
  */
 final class Chain extends Step {
-
-  /**
-   * The [builder] function has to return a [Step] until the index is as high,
-   * as the length allows. The function will be executed every time,
-   * the forgoing [Step] is done with it's execution.
-   */
-  late final Step Function(int index) builder;
-
-  /**
-   * The [length] parameter is the length of the [Chain]
-   * and will specify of how many [Step]s the [Chain] consists of.
-   */
-  final int length;
-
   Chain._internal({required this.builder, required this.length});
 
   /**
@@ -45,12 +31,24 @@ final class Chain extends Step {
    *
    * Will execute the builder's [Step]s, if the context won't [pop()] or [close()].
    */
-  factory Chain.builder(Step builder(int index), {required final int length}) {
-    return Chain._internal(builder: builder, length: length);
-  }
+  factory Chain.builder(Step builder(int index), {required final int length}) =>
+      Chain._internal(builder: builder, length: length);
 
   /**
-   * The [index] of the currently ongoing [Step].
+   * The [builder] function has to return a [Step] until the index is as high,
+   * as the length allows. The function will be executed every time,
+   * the forgoing [Step] is done with it's execution.
+   */
+  late final Step Function(int index) builder;
+
+  /**
+   * The [length] parameter is the length of the [Chain]
+   * and will specify of how many [Step]s the [Chain] consists of.
+   */
+  final int length;
+
+  /**
+   * The [index] of the currently ongoing [Step] for the [Chain].
    */
   int _i = 0;
 
@@ -58,7 +56,8 @@ final class Chain extends Step {
    * The [builder()] of the [Chain]'s execution order.
    */
   @override
-  Future<Step?> execute(FlowController controller, [FutureOr<Step?> candidate()?]) async {
+  Future<Step?> execute(FlowController controller,
+      [FutureOr<Step?> candidate()?]) async {
     await controller.createBubble(() => _i != length ? builder(_i++) : null);
     final none = () => null;
     return (candidate ?? none)();

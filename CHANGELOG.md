@@ -1,5 +1,4 @@
 ## 1.0.0
-Mistake on versioning, 1.x.x is unstable.
 
 - Base workflow structure
 - Essential steps
@@ -7,7 +6,6 @@ Mistake on versioning, 1.x.x is unstable.
 - CLI steps for toolchain development
 
 ## 1.0.1
-Mistake on versioning, 1.x.x is unstable.
 - Added ``onFailure()`` & ``onSuccess()`` to the ``Check``-step.
 - Fixed the output of ``Check`` when ``canStartProcesses`` is set to ``false``.
 - Fixed directory look-up of ``Check``.
@@ -82,3 +80,4 @@ Mistake on versioning, 1.x.x is unstable.
 - Added ``CollectionStep``, ``StepWiser`` & ``SingleStep`` to create 
 a superordinary ``Step``-Container for full API-references,
 e.g. for ``stepflow_clang``.
+- Deprecated CLI and platform tooling, moved them over to their own packages: ``stepflow_platform``, ``natrix``.

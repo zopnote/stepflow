@@ -10,13 +10,11 @@
  * provide a formating and parsing function.
  *
  */
-@Deprecated("The CLI-tooling of stepflow is deprecated and will be removed in the next major version."
-    " stepflow's command line stuff is moved out of the package into the pub.dev-package natrix. "
-    "If you want to use the command features further migrate over.")
+@Deprecated("Everything relating to the creation of commands "
+    "and flags will be removed from Stepflow in the next major update."
+    "The features have been extracted into the Dart package natrix "
+    "and have undergone a general overhaul.")
 class Flag<T> {
-  @Deprecated("The CLI-tooling of stepflow is deprecated and will be removed in the next major version."
-      " stepflow's command line stuff is moved out of the package into the pub.dev-package natrix. "
-      "If you want to use the command features further migrate over.")
   Flag({
     required this.name,
     required this.value,
@@ -110,13 +108,11 @@ class Flag<T> {
 /**
  * A flag that contains a [String] as it's value.
  */
-@Deprecated("The CLI-tooling of stepflow is deprecated and will be removed in the next major version."
-    " stepflow's command line stuff is moved out of the package into the pub.dev-package natrix. "
-    "If you want to use the command features further migrate over.")
+@Deprecated("Everything relating to the creation of commands "
+    "and flags will be removed from Stepflow in the next major update."
+    "The features have been extracted into the Dart package natrix "
+    "and have undergone a general overhaul.")
 final class TextFlag extends Flag<String> {
-  @Deprecated("The CLI-tooling of stepflow is deprecated and will be removed in the next major version."
-      " stepflow's command line stuff is moved out of the package into the pub.dev-package natrix. "
-      "If you want to use the command features further migrate over.")
   TextFlag({required super.name, super.description, super.value = ""})
     : super(format: _format, parse: _parse);
 
@@ -151,13 +147,11 @@ final class TextFlag extends Flag<String> {
  * Whenever the flag is provided in command line,
  * it is interpreted as true, even without specifying it directly.
  */
-@Deprecated("The CLI-tooling of stepflow is deprecated and will be removed in the next major version."
-    " stepflow's command line stuff is moved out of the package into the pub.dev-package natrix. "
-    "If you want to use the command features further migrate over.")
+@Deprecated("Everything relating to the creation of commands "
+    "and flags will be removed from Stepflow in the next major update."
+    "The features have been extracted into the Dart package natrix "
+    "and have undergone a general overhaul.")
 final class BoolFlag extends Flag<bool> {
-  @Deprecated("The CLI-tooling of stepflow is deprecated and will be removed in the next major version."
-      " stepflow's command line stuff is moved out of the package into the pub.dev-package natrix. "
-      "If you want to use the command features further migrate over.")
   BoolFlag({required super.name, required super.value, super.description})
     : super(format: _format, parse: _parse);
 

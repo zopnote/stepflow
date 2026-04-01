@@ -2,6 +2,10 @@ import 'dart:async';
 
 import 'package:stepflow/core.dart';
 
+@Deprecated("Everything relating to the standard output "
+    "will be removed from stepflow in the next major update."
+    "The features have been extracted into the Dart package natrix "
+    "and have undergone a general overhaul.")
 class LogColor {
   const LogColor(this.value);
   final String value;
@@ -57,7 +61,8 @@ class LogColor {
   static String backgroundGreened(String msg) => "$backgroundGreen$msg$reset";
   static String backgroundYellowed(String msg) => "$backgroundYellow$msg$reset";
   static String backgroundBlued(String msg) => "$backgroundBlue$msg$reset";
-  static String backgroundMagentaed(String msg) => "$backgroundMagenta$msg$reset";
+  static String backgroundMagentaed(String msg) =>
+      "$backgroundMagenta$msg$reset";
   static String backgroundCyanid(String msg) => "$backgroundCyan$msg$reset";
   static String backgroundWhited(String msg) => "$backgroundWhite$msg$reset";
 
@@ -73,22 +78,26 @@ class LogColor {
   String toString() => value;
 }
 
+@Deprecated("Everything relating to the standard output "
+    "will be removed from stepflow in the next major update."
+    "The features have been extracted into the Dart package natrix "
+    "and have undergone a general overhaul.")
 class LogASCIIContext extends Step {
   final String text;
   final LogColor color;
   final Level level;
 
   const LogASCIIContext(
-      this.text, {
-        this.color = LogColor.white,
-        this.level = Level.normal,
-      });
+    this.text, {
+    this.color = LogColor.white,
+    this.level = Level.normal,
+  });
 
   @override
   FutureOr<Step?> execute(
-      FlowController controller, [
-        FutureOr<Step?> Function()? candidate,
-      ]) {
+    FlowController controller, [
+    FutureOr<Step?> Function()? candidate,
+  ]) {
     controller.context.send(Response("$color$text${LogColor.reset}", level));
     return (candidate ?? () => null)();
   }
