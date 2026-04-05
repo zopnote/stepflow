@@ -76,7 +76,7 @@
 - Added ``printLast`` option to ``runCommand()``
 - Added ``LogASCIIContext``-``Step`` to ``stepflow.io/steps``
 
-## 2.3.3 (WIP)
+## 3.0.0-pre (WIP)
 - Added ``CollectionStep``, ``StepWiser`` & ``SingleStep`` to create 
 a superordinary ``Step``-Container for full API-references,
 e.g. for ``stepflow_clang``.

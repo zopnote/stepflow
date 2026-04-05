@@ -58,8 +58,7 @@ final class Chain extends Step {
   @override
   Future<Step?> execute(FlowController controller,
       [FutureOr<Step?> candidate()?]) async {
-    await controller.createBubble(() => _i != length ? builder(_i++) : null);
-    final none = () => null;
-    return (candidate ?? none)();
+    await controller.createBubble(() => _i < length ? builder(_i++) : null);
+    return candidate?.call();
   }
 }

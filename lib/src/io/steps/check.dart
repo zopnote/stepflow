@@ -19,22 +19,16 @@ final class Check extends ConfigureStep {
   final List<String> directories;
 
   /// Gets triggered if one or multiple programs were not found.
-  final void Function(FlowContext context, List<String> notFound)? onFailure;
+  final void Function(List<String> notFound)? onFailure;
 
   /// Gets triggered if all programs were found.
-  final void Function(FlowContext context)? onSuccess;
+  final void Function()? onSuccess;
 
   /// Decide if the search procedure can start processes to
   /// found programs if they aren't in the systems path.
   final bool searchCanStartProcesses;
 
-  /**
-   * Optional name/tag describing what this [Check] step does.
-   */
-  final String? name;
-
   const Check({
-    @Deprecated("Will be removed in the next major version.") this.name,
     required this.programs,
     this.directories = const [],
     this.onFailure,
@@ -105,7 +99,7 @@ final class Check extends ConfigureStep {
    * based on the result.
    */
   @override
-  Step configure() => Runnable(name: name, (context) {
+  Step configure() => Runnable(() {
         if (programs.isEmpty) {
           return;
         }
@@ -118,12 +112,12 @@ final class Check extends ConfigureStep {
 
         if (notAvailable.isEmpty) {
           if (onSuccess != null) {
-            onSuccess!(context);
+            onSuccess!();
           }
           return;
         }
         if (onFailure != null) {
-          onFailure!(context, notAvailable);
+          onFailure!(notAvailable);
         }
       });
 }

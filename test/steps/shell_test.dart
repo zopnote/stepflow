@@ -5,40 +5,6 @@ import 'package:stepflow/io.dart';
 
 void main() {
   group('Shell Step', () {
-    test('Shell step executes a program and completes in a workflow', () async {
-      final isWindows = Platform.isWindows;
-      final program = isWindows ? 'cmd' : 'sh';
-      final args = isWindows ? ['/c', 'echo', 'test'] : ['-c', 'echo test'];
-
-      final shell = Shell(
-        program: program,
-        arguments: args,
-      );
-
-      final response = await runWorkflow(shell);
-      expect(response, isNotNull);
-    });
-
-    test('Shell step captures stdout via onStdout', () async {
-      final List<int> output = [];
-      final isWindows = Platform.isWindows;
-      final program = isWindows ? 'cmd' : 'sh';
-      final args = isWindows ? ['/c', 'echo', 'Dart'] : ['-c', 'echo Dart'];
-
-      final shell = Shell(
-        program: program,
-        arguments: args,
-        onStdout: (context, data) {
-          output.addAll(data);
-        },
-      );
-
-      await runWorkflow(shell);
-      
-      expect(output, isNotEmpty);
-      expect(String.fromCharCodes(output), contains('Dart'));
-    });
-
     test('Shell step respects workingDirectory', () async {
       final tempDir = Directory.systemTemp.createTempSync('stepflow_test');
       try {
@@ -48,7 +14,8 @@ void main() {
         // On Windows 'dir', on others 'ls'
         final isWindows = Platform.isWindows;
         final program = isWindows ? 'cmd' : 'ls';
-        final args = isWindows ? ['/c', 'dir', 'test_file.txt'] : ['test_file.txt'];
+        final args =
+            isWindows ? ['/c', 'dir', 'test_file.txt'] : ['test_file.txt'];
 
         bool foundFile = false;
         final shell = Shell(
@@ -58,7 +25,7 @@ void main() {
             workingDirectory: tempDir.path,
             runInShell: isWindows,
           ),
-          onStdout: (context, data) {
+          onStdout: (data) {
             if (String.fromCharCodes(data).contains('test_file.txt')) {
               foundFile = true;
             }
@@ -66,7 +33,8 @@ void main() {
         );
 
         await runWorkflow(shell);
-        expect(foundFile, isTrue, reason: 'Should find the test file in the working directory');
+        expect(foundFile, isTrue,
+            reason: 'Should find the test file in the working directory');
       } finally {
         tempDir.deleteSync(recursive: true);
       }
@@ -79,14 +47,14 @@ void main() {
       final args = isWindows ? ['/c', 'echo', 'test'] : ['-c', 'echo test'];
 
       final workflow = Chain(steps: [
-        Runnable((context) {
+        Runnable(() {
           completedSteps++;
         }),
         Shell(
           program: program,
           arguments: args,
         ),
-        Runnable((context) {
+        Runnable(() {
           completedSteps++;
         }),
       ]);

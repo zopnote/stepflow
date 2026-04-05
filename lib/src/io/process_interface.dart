@@ -6,24 +6,6 @@ import 'package:stepflow/platform.dart' as stepflow;
 import 'package:uuid/uuid.dart';
 
 /**
- * Thrown when a required application or executable cannot be found.
- */
-class ApplicationNotFoundException implements Exception {
-  /**
-   * The name or path of the application that was not found.
-   */
-  final String applicationName;
-
-  /**
-   * Detailed message describing the cause of the exception.
-   */
-  late final String cause;
-
-  ApplicationNotFoundException(this.applicationName)
-      : cause = "Couldn't find the application $applicationName.";
-}
-
-/**
  * Manages a command line process, initiated by this application.
  */
 

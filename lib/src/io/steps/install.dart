@@ -39,19 +39,12 @@ final class Install extends ConfigureStep {
   final List<String> excludeFileWithPatterns;
 
   /**
-   * Tag describing what [Install] does.
-   */
-  final String? name;
-
-  /**
    * A step that installs files and directories to a specified location.
    *
    * Default const constructor.
    * All lists are set to empty ones, on default.
    */
   const Install({
-    @Deprecated("Will be removed in the next major version.")
-    this.name,
     this.installPath = "",
     this.binariesPath = "",
     this.files = const [],
@@ -113,19 +106,20 @@ final class Install extends ConfigureStep {
    */
   @override
   Step configure() {
-    return Runnable(name: name, (context) {
-      try {
-        final Directory workDirectory = Directory(binariesPath);
-        workDirectory.listSync().forEach((entity) {
-          if (entity is File)
-            _forFile(entity);
-          else if (entity is Directory)
-            _forDirectory(entity);
-          /// TODO: Add something to expose the event, that symlinks etc. are not supported to install. Just Files and Directories.
-        });
-      } catch (error) {
-        return Response(error.toString(), Level.verbose);
-      }
+    return Runnable(() {
+      final Directory workDirectory = Directory(binariesPath);
+      workDirectory.listSync().forEach((entity) {
+        if (entity is File) {
+          _forFile(entity);
+        } else if (entity is Directory) {
+          _forDirectory(entity);
+        } else {
+          throw FileSystemException(
+              "Only directories and files are supported for installation.",
+              entity.path,
+              OSError("Invalid file system type.", 2));
+        }
+      });
     });
   }
 }

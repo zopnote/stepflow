@@ -27,12 +27,9 @@ abstract class Step {
   ]) =>
       (candidate ?? () => null)();
 
-  Future<Response> call([FlowController? controller]) async {
-    controller ??= FlowController.observed(
-      (r) => r.isError ? throw Exception(r) : null,
-    );
-    await this.execute(controller);
-    return controller.close();
+  Future<void> call([FlowController? controller]) async {
+    controller ??= FlowController();
+    await controller.execute(this);
   }
 }
 
@@ -59,6 +56,7 @@ abstract class ConfigureStep extends Step {
   FutureOr<Step?> execute(
     final FlowController controller, [
     FutureOr<Step?> candidate()?,
-  ]) =>
-      this.configure().execute(controller, candidate);
+  ]) {
+    return this.configure().execute(controller, candidate);
+  }
 }

@@ -15,7 +15,5 @@ final class Skipped extends Step {
   FutureOr<Step?> execute(
     final FlowController controller, [
     FutureOr<Step?> candidate()?,
-  ]) {
-    return (candidate ?? () => null)();
-  }
+  ]) => candidate?.call();
 }

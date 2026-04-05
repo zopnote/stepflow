@@ -4,7 +4,6 @@ import 'package:stepflow/core.dart';
 class PrintOutDartVersion extends ConfigureStep {
   const PrintOutDartVersion();
 
-
   @override
   Step configure() {
     String version = "";
@@ -13,18 +12,18 @@ class PrintOutDartVersion extends ConfigureStep {
         Check(
           programs: ["dart"],
           searchCanStartProcesses: false,
-          onFailure: (context, notFound) {
-            context.close("The Dart SDK isn't available on this platform.");
+          onFailure: (notFound) {
+            print("The Dart SDK isn't available on this platform.");
           },
         ),
         Shell(
           program: "dart",
           arguments: ["--version"],
-          onStdout: (context, chars) {
+          onStdout: (chars) {
             version += String.fromCharCodes(chars);
           },
         ),
-        Runnable((context) {
+        Runnable(() {
           print(
             "The version of the installed Dart SDK is " +
                 version.split(" ")[3] +
@@ -37,6 +36,5 @@ class PrintOutDartVersion extends ConfigureStep {
 }
 
 Future<void> main() async {
-
   await runWorkflow(const PrintOutDartVersion());
 }

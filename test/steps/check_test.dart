@@ -5,9 +5,6 @@ import 'package:stepflow/core.dart';
 import 'package:stepflow/io.dart';
 import 'package:test/test.dart';
 
-const successPattern = "TEST_CHECK_STEP_SUCCESS";
-const failurePattern = "TEST_CHECK_STEP_FAILURE";
-
 const checkStepName = "Test check step";
 const checkStepDescription = "Part of isolated setup to unit test the step.";
 const foundablePrograms = ["dart", "git"];
@@ -18,36 +15,24 @@ final processablePrograms = [
 final directories = [Directory.current.path + "/test/steps/check"];
 const foundableInDirectoriesPrograms = ["testprogram"];
 
-final onFailure = (FlowContext context, List<String> _) {
-  context.send(const Response(failurePattern));
-};
-final onSuccess = (FlowContext context) {
-  context.send(const Response(successPattern));
-};
-
 Future<void> runCheckTest({
   required List<String> programs,
   required List<String> directories,
   required bool searchCanStartProcesses,
   required bool expectedToFail,
 }) async {
-  String responseMessages = "";
-
+  late final bool value;
   final checkStep = Check(
-    name: checkStepName,
-    programs: programs,
-    searchCanStartProcesses: searchCanStartProcesses,
-    directories: directories,
-    onFailure: onFailure,
-    onSuccess: onSuccess,
-  );
-  runWorkflow(checkStep, (r) => responseMessages += r.message);
+      programs: programs,
+      searchCanStartProcesses: searchCanStartProcesses,
+      directories: directories,
+      onFailure: (_) => value = false,
+      onSuccess: () => value = true);
+  await runWorkflow(checkStep);
 
   expect(
-    responseMessages.contains(expectedToFail ? failurePattern : successPattern),
-    true,
-    reason:
-        "Expected ${expectedToFail ? 'failure' : 'success'} but got: $responseMessages",
+    value,
+    !expectedToFail,
   );
 }
 
@@ -64,13 +49,16 @@ void main() {
   );
   if (!File(testprogram).existsSync()) {
     print("Compiling $assetDirectory/testprogram.dart...");
-    Process.runSync("dart", [
-      "compile",
-      "exe",
-      "testprogram.dart",
-      "-o",
-      testprogram,
-    ], workingDirectory: assetDirectory);
+    Process.runSync(
+        "dart",
+        [
+          "compile",
+          "exe",
+          "testprogram.dart",
+          "-o",
+          testprogram,
+        ],
+        workingDirectory: assetDirectory);
   }
 
   group('CheckStep', () {

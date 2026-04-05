@@ -15,16 +15,20 @@ void main() {
       expect(exitCode, 0);
     });
 
-    test('fromEnvironment throws ApplicationNotFoundException for non-existent app', () {
+    test(
+        'fromEnvironment throws ApplicationNotFoundException for non-existent app',
+        () {
       expect(
-        () => ProcessInterface.fromEnvironment('this_app_should_not_exist_12345', []),
-        throwsA(isA<ApplicationNotFoundException>()),
+        () => ProcessInterface.fromEnvironment(
+            'this_app_should_not_exist_12345', []),
+        throwsA(isA<IOException>()),
       );
     });
 
     test('fromFilepath starts a process and waits for exit', () async {
       // Use a command that exists on all platforms
-      final exe = Platform.isWindows ? 'C:\\Windows\\System32\\cmd.exe' : '/bin/sh';
+      final exe =
+          Platform.isWindows ? 'C:\\Windows\\System32\\cmd.exe' : '/bin/sh';
       final args = Platform.isWindows ? ['/c', 'exit', '0'] : ['-c', 'exit 0'];
 
       // Skip test if the file doesn't exist (edge case)
@@ -38,12 +42,6 @@ void main() {
       expect(process.isManaged, isTrue);
       final exitCode = await process.waitForExit();
       expect(exitCode, 0);
-    });
-
-
-    test('ApplicationNotFoundException message is correct', () {
-      final ex = ApplicationNotFoundException('my-app');
-      expect(ex.cause, contains('my-app'));
     });
   });
 
