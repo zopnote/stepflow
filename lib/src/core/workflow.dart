@@ -31,8 +31,11 @@ Future<void> runWorkflow(
   try {
     await controller.execute(step);
   } catch (e, st) {
+    if (e is! Exception) {
+      rethrow;
+    }
     FlowException exception = FlowException(
-        exception: e as Exception,
+        exception: e,
         stackTrace: [st],
         depth: controller._depth,
         currentStep: controller._current!);
